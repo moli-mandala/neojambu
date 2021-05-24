@@ -9,7 +9,7 @@ cur = con.cursor()
 
 lang_map = {}
 cur.execute('CREATE TABLE Languages (id TEXT, name TEXT, glottocode TEXT, long TEXT, lat TEXT, clade TEXT)')
-with open('../cldf/languages.csv', 'r') as fin:
+with open('cldf/languages.csv', 'r') as fin:
     entries = csv.reader(fin)
     for i, row in enumerate(entries):
         if i == 0: continue
@@ -18,7 +18,7 @@ with open('../cldf/languages.csv', 'r') as fin:
 
 cur.execute('CREATE TABLE Entries (number TEXT, headword TEXT, description TEXT)')
 
-with open('../cldf/parameters.csv', 'r') as fin:
+with open('cldf/parameters.csv', 'r') as fin:
     entries = csv.reader(fin)
     for i, row in enumerate(entries):
         if i == 0: continue
@@ -26,7 +26,7 @@ with open('../cldf/parameters.csv', 'r') as fin:
 
 cur.execute('CREATE TABLE Reflexes (number TEXT, language TEXT, entry TEXT, form TEXT, gloss TEXT, native TEXT, phonemic TEXT, cognateset TEXT, notes TEXT, source TEXT)')
 
-with open('../cldf/forms.csv', 'r') as fin:
+with open('cldf/forms.csv', 'r') as fin:
     entries = csv.reader(fin)
     for i, row in enumerate(entries):
         if i == 0: continue

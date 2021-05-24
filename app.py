@@ -74,3 +74,7 @@ def entries(entry=None, lang=None):
         print('all')
         cur.execute('SELECT * FROM Entries limit ?, ?', (page * 200 - 200, 200))
         return render_template('entries.html', entries=cur.fetchall(), page=page)
+
+if __name__ == '__main__':
+    # Threaded option to enable multiple instances for multiple user access support
+    app.run(threaded=True, port=5000)
