@@ -1,0 +1,20 @@
+{% include "head.html" %}
+<h1 class="text-4xl"><span class="font-semibold">{{ lang }}</span>{% if entry %} <a class="text-red-700 hover:text-red-900 underline font-thin" href="/entries/{{ entry }}" class="font-light">[{{ entry }}]</a>{% endif %}</h1>
+<div class="mt-5">
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {% for entry in reflexes %}
+        <div class="shadow rounded m-1 p-2 pl-3 border-l-4 hover:shadow-lg transition" style="border-color: #{{ colors[langs[lang][5]] }};">
+            <p>
+                <span class="font-semibold">{{ entry[3] }}</span>
+                {% if entry[5] %}<span class="text-gray-400">{{ entry[5] }}</span>{% endif %}
+                {% if entry[6] %}<span class="text-gray-400">/&#8288;{{ entry[6] }}&#8288;/</span>{% endif %}
+            </p>
+            <p>
+                {% if entry[4] %}‘&#8288;{{ entry[4] }}&#8288;’{% endif %}
+                {% if entry[9] %}<a class="text-red-700 hover:text-red-900 underline" href="/references/{{ entry[9] }}">{{ entry[9] }}</a>{% endif %}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% include "foot.html" %}
