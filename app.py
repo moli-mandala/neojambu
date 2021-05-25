@@ -32,18 +32,32 @@ cur = con.cursor()
 cur.execute('SELECT * FROM Languages')
 langs = {}
 for i in cur.fetchall():
-    langs[i[1]] = i
+    langs[i[0]] = i
 
 @app.route("/")
 def hello_world():
     return render_template('index.html')
 
-@app.route("/languages/<lang>")
-def languages(lang):
+@app.route("/reflexes")
+def reflexes():
+    page = int(request.args.get('page', 1))
     con = sqlite3.connect('data.db')
     cur = con.cursor()
-    cur.execute('SELECT * FROM Reflexes WHERE language=?', (lang,))
-    return render_template('reflex.html', lang=lang, langs=langs, colors=colors, reflexes=cur.fetchall())
+    cur.execute('SELECT * FROM Reflexes limit ?, ?', (page * 200 - 200, 200))
+    return render_template('reflex.html', langs=langs, colors=colors, reflexes=cur.fetchall(), page=page)
+
+@app.route("/languages")
+@app.route("/languages/<lang>")
+def languages(lang=None):
+    if lang:
+        page = int(request.args.get('page', 1))
+        con = sqlite3.connect('data.db')
+        cur = con.cursor()
+        # cur.execute('SELECT * FROM Reflexes WHERE language=?', (lang,))
+        cur.execute('SELECT * FROM Reflexes WHERE language=? limit ?, ?', (lang, page * 200 - 200, 200))
+        return render_template('reflex.html', lang=lang, langs=langs, colors=colors, reflexes=cur.fetchall())
+    else:
+        return render_template('langs.html', langs=langs, colors=colors)
 
 @app.route("/entries")
 @app.route('/entries/<entry>')

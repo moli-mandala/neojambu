@@ -9,15 +9,26 @@
     </div>
 </div>
 <div class="mt-5">
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <div class="grid w-full">
         {% for lang, entries in reflexes.items() %}
-        <a class="m-1" href="/entries/{{ entry[0] }}/{{ lang }}">
-        <div class="h-full w-full shadow rounded p-2 pl-3 border-l-4 hover:shadow-lg transition" style="border-color: #{{ colors[langs[lang][5]] }};">
-            <p><span class="text-lg">{{ lang }}</span></p>
-            {% for entry in entries %}{% if loop.index != 1 %}, {% endif %}<span>{{ entry[3] | safe }}</span>{% if entry[4] %} <span class="text-gray-400">‘&#8288;{{ entry[4] }}&#8288;’</span>{% endif %}{% if entry[6] %} <span class="text-gray-400">/&#8288;{{ entry[6] }}&#8288;/</span>{% endif %}{% endfor %}
+        <a href="/entries/{{ entry[0] }}/{{ lang }}">
+        <div class="rounded shadow my-1 border-l-4 flex transition hover:shadow-lg hover:bg-gray-50" style="border-color: #{{ colors[langs[lang][5]] }};">
+            <div class="p-1 pl-2 w-1/4">{{ langs[lang][1] }}</div>
+            <div class="p-1 w-3/4">
+                {% for entry in entries %}
+                    <p><span>{{ entry[3] }}</span>{% if entry[4] %} <span class="text-gray-400">‘&#8288;{{ entry[4] }}&#8288;’</span>{% endif %}{% if entry[6] %} <span class="text-gray-400">/&#8288;{{ entry[6] }}&#8288;/</span>{% endif %}</p>
+                {% endfor %}
+            </div>
         </div>
         </a>
         {% endfor %}
+        <!-- {% for lang, entries in reflexes.items() %}
+        <div class="table-row w-full p-2 pl-3 border-l-4" style="border-color: #{{ colors[langs[lang][5]] }};">
+            <div class="table-cell"><span class="text-lg">{{ lang }}</span></div>
+            {% for entry in entries %}{% if loop.index != 1 %}, {% endif %}<span>{{ entry[3] | safe }}</span>{% if entry[4] %} <span class="text-gray-400">‘&#8288;{{ entry[4] }}&#8288;’</span>{% endif %}{% if entry[6] %} <span class="text-gray-400">/&#8288;{{ entry[6] }}&#8288;/</span>{% endif %}{% endfor %}
+        </div>
+        </a>
+        {% endfor %} -->
     </div>
 </div>
 <script>
@@ -36,7 +47,7 @@ var icon = L.icon( {
             iconUrl: iconUrl,
             iconSize: [15, 15]
         } );
-L.marker([{{ langs[lang][4] }}, {{ langs[lang][3] }}], {icon: icon}).bindTooltip("<strong>{{ lang }}</strong><br>{% for entry in entries %}{% if loop.index != 1 %}, {% endif %}{{ entry[3] | safe }}{% endfor %}").openTooltip().addTo(map)
+L.marker([{{ langs[lang][4] }}, {{ langs[lang][3] }}], {icon: icon}).bindTooltip("<strong>{{ langs[lang][1] }}</strong><br>{% for entry in entries %}{% if loop.index != 1 %}, {% endif %}{{ entry[3] | safe }}{% endfor %}").openTooltip().addTo(map)
 {% endfor %}
 </script>
 {% include "foot.html" %}

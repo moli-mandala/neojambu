@@ -1,20 +1,57 @@
 {% include "head.html" %}
-<h1 class="text-4xl"><span class="font-semibold">{{ lang }}</span>{% if entry %} <a class="text-red-700 hover:text-red-900 underline font-thin" href="/entries/{{ entry }}" class="font-light">[{{ entry }}]</a>{% endif %}</h1>
+<h1 class="text-4xl">
+    <span class="font-semibold">{% if lang %}{% if entry %}<a class="text-red-700 hover:text-red-900 underline" href="/languages/{{ lang }}">{% endif %}{{ langs[lang][1] }}{% if entry %}</a>{% endif %} <span class="font-thin">[{{ lang[0] }}]</span>{% else %}Reflexes{% endif %}</span>
+    {% if entry %} <a class="text-red-700 hover:text-red-900 underline font-thin" href="/entries/{{ entry }}" class="font-light">[{{ entry }}]</a>{% endif %}
+</h1>
+{% if lang %}
+<div class="grid grid-cols-2 mt-8 w-full">
+<div class="rounded shadow p-2 m-1">
+    <h2 class="font-thin">Family</h2>
+    <p class="border-l-4 pl-4">{{ langs[lang][5] }}</p>
+    <h2 class="font-thin">Glottolog</h2>
+    <p class="border-l-4 pl-4"><a href="https://glottolog.org/resource/languoid/id/{{ langs[lang][2] }}">{{ langs[lang][2] }}</a></p>
+    <h2 class="font-thin">Coordinates</h2>
+    <p class="border-l-4 pl-4">{{ langs[lang][4] }}, {{ langs[lang][3] }}</p>
+</div>
+<div class="m-1">
+    <div class="rounded shadow" style="width: 100%; height: 500px;" id="map">
+    </div>
+</div>
+</div>
+{% endif %}
 <div class="mt-5">
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {% for entry in reflexes %}
-        <div class="shadow rounded m-1 p-2 pl-3 border-l-4 hover:shadow-lg transition" style="border-color: #{{ colors[langs[lang][5]] }};">
-            <p>
-                <span class="font-semibold">{{ entry[3] }}</span>
-                {% if entry[5] %}<span class="text-gray-400">{{ entry[5] }}</span>{% endif %}
-                {% if entry[6] %}<span class="text-gray-400">/&#8288;{{ entry[6] }}&#8288;/</span>{% endif %}
-            </p>
-            <p>
-                {% if entry[4] %}‘&#8288;{{ entry[4] }}&#8288;’{% endif %}
-                {% if entry[9] %}<a class="text-red-700 hover:text-red-900 underline" href="/references/{{ entry[9] }}">{{ entry[9] }}</a>{% endif %}
-            </p>
+    <div class="grid">
+        {% for word in reflexes %}
+        <div class="rounded shadow my-1 border-l-4 flex hover:shadow-lg hover:bg-gray-50" style="border-color: #{{ colors[langs[word[1]][5]] }};">
+            <div class="p-1 pl-2 w-1/4">{{ langs[word[1]][1] }}</div>
+            <div class="p-1 w-1/4">
+                <p><span>{{ word[3] }}</span>{% if word[6] %} <span class="text-gray-400">/&#8288;{{ word[6] }}&#8288;/</span>{% endif %}{% if word[4] %} <span class="text-gray-400">‘&#8288;{{ word[4] }}&#8288;’</span>{% endif %}</p>
+            </div>
+            <div class="p-1 w-1/4">
+                <p>{{ word[10] }} <span class="font-thin">[{{ word[2] }}]</span></p>
+            </div>
+            <div class="p-1 w-1/4">
+                <p>{{ word[8] }} {{ word[9] }}</p>
+            </div>
         </div>
         {% endfor %}
     </div>
 </div>
+<script>
+var map = L.map('map').setView([{{ langs[lang][4] }}, {{ langs[lang][3] }}], 4);
+
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service',
+	maxZoom: 8
+}).addTo(map)
+var iconSvg = `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="14" cy="14" r="13" fill="#{{ colors[langs[lang][5]] }}" stroke="black" stroke-width="2"/>
+</svg>`
+var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
+var icon = L.icon( {
+            iconUrl: iconUrl,
+            iconSize: [15, 15]
+        } );
+L.marker([{{ langs[lang][4] }}, {{ langs[lang][3] }}], {icon: icon}).bindTooltip("<strong>{{ langs[lang][1] }}</strong>").openTooltip().addTo(map)
+</script>
 {% include "foot.html" %}
