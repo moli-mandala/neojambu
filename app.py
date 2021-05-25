@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for
 import sqlite3
 
 app = Flask(__name__)
@@ -32,7 +32,16 @@ cur = con.cursor()
 cur.execute('SELECT * FROM Languages')
 langs = {}
 for i in cur.fetchall():
-    langs[i[0]] = i
+    langs[i[0]] = list(i)
+for i in langs:
+    if langs[i][5] in ['MIA', 'OIA'] or 'Old' in langs[i][1]:
+        langs[i].append(f"""<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="0,15 15,0 30,15 15,30" fill="#{colors[langs[i][5]]}" stroke="black" stroke-width="2"/>
+</svg>""")
+    else:
+        langs[i].append(f"""<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="14" cy="14" r="13" fill="#{colors[langs[i][5]]}" stroke="black" stroke-width="2"/>
+</svg>""")
 
 @app.route("/")
 def hello_world():
@@ -55,7 +64,7 @@ def languages(lang=None):
         cur = con.cursor()
         # cur.execute('SELECT * FROM Reflexes WHERE language=?', (lang,))
         cur.execute('SELECT * FROM Reflexes WHERE language=? limit ?, ?', (lang, page * 200 - 200, 200))
-        return render_template('reflex.html', lang=lang, langs=langs, colors=colors, reflexes=cur.fetchall())
+        return render_template('reflex.html', lang=lang, langs=langs, colors=colors, reflexes=cur.fetchall(), page=page)
     else:
         return render_template('langs.html', langs=langs, colors=colors)
 

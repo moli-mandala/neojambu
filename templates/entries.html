@@ -9,8 +9,18 @@
         </a>
         {% endfor %}
     </div>
-    <div class="w-full flex">
-        <div class="mx-auto rounded shadow p-2"><a href="/entries?page={{ page + 1 }}">{{ page + 1 }}</a></div>
+    {% if page %}
+    <div class="w-full flex mt-3">
+        <div class="mx-auto flex flex-row">
+            <div class="mx-2 p-2">
+                <a class="text-red-700 hover:text-red-900 underline" href="/entries?page={{ page - 1 }}">←</a>
+            </div>
+            <div class="mx-2 rounded shadow p-2">{{ page }}</div>
+            <div class="mx-2 p-2">
+                <a class="text-red-700 hover:text-red-900 underline" href="/entries?page={{ page + 1 }}">→</a>
+            </div>
+        </div>
     </div>
+    {% endif %}
 </div>
 {% include "foot.html" %}

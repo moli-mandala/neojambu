@@ -4,8 +4,8 @@
     {% if entry %} <a class="text-red-700 hover:text-red-900 underline font-thin" href="/entries/{{ entry }}" class="font-light">[{{ entry }}]</a>{% endif %}
 </h1>
 {% if lang %}
-<div class="grid grid-cols-2 mt-8 w-full">
-<div class="rounded shadow p-2 m-1">
+<div class="flex mt-8 w-full">
+<div class="rounded shadow p-2 m-1 w-3/4">
     <h2 class="font-thin">Family</h2>
     <p class="border-l-4 pl-4">{{ langs[lang][5] }}</p>
     <h2 class="font-thin">Glottolog</h2>
@@ -13,8 +13,8 @@
     <h2 class="font-thin">Coordinates</h2>
     <p class="border-l-4 pl-4">{{ langs[lang][4] }}, {{ langs[lang][3] }}</p>
 </div>
-<div class="m-1">
-    <div class="rounded shadow" style="width: 100%; height: 500px;" id="map">
+<div class="m-1 w-1/4">
+    <div class="rounded shadow" style="width: 100%; height: 250px;" id="map">
     </div>
 </div>
 </div>
@@ -25,10 +25,10 @@
         <div class="rounded shadow my-1 border-l-4 flex hover:shadow-lg hover:bg-gray-50" style="border-color: #{{ colors[langs[word[1]][5]] }};">
             <div class="p-1 pl-2 w-1/4">{{ langs[word[1]][1] }}</div>
             <div class="p-1 w-1/4">
-                <p><span>{{ word[3] }}</span>{% if word[6] %} <span class="text-gray-400">/&#8288;{{ word[6] }}&#8288;/</span>{% endif %}{% if word[4] %} <span class="text-gray-400">‘&#8288;{{ word[4] }}&#8288;’</span>{% endif %}</p>
+                <p><a href="/reflexes/{{ word[0] }}">{{ word[3] }}</a>{% if word[6] %} <span class="text-gray-400">/&#8288;{{ word[6] }}&#8288;/</span>{% endif %}{% if word[4] %} <span class="text-gray-400">‘&#8288;{{ word[4] }}&#8288;’</span>{% endif %}</p>
             </div>
             <div class="p-1 w-1/4">
-                <p>{{ word[10] }} <span class="font-thin">[{{ word[2] }}]</span></p>
+                <p><a href="/entries/{{ word[2] }}">{{ word[10] }} <span class="font-thin">[{{ word[2] }}]</span></a></p>
             </div>
             <div class="p-1 w-1/4">
                 <p>{{ word[8] }} {{ word[9] }}</p>
@@ -37,16 +37,28 @@
         {% endfor %}
     </div>
 </div>
+{% if page %}
+<div class="w-full flex mt-3">
+    <div class="mx-auto flex flex-row">
+        <div class="mx-2 p-2">
+            <a class="text-red-700 hover:text-red-900 underline" href="{{ request.path }}?page={{ page - 1 }}">←</a>
+        </div>
+        <div class="mx-2 rounded shadow p-2">{{ page }}</div>
+        <div class="mx-2 p-2">
+            <a class="text-red-700 hover:text-red-900 underline" href="{{ request.path }}?page={{ page + 1 }}">→</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% if lang %}
 <script>
-var map = L.map('map').setView([{{ langs[lang][4] }}, {{ langs[lang][3] }}], 4);
+var map = L.map('map').setView([{{ langs[lang][4] }}, {{ langs[lang][3] }}], 3);
 
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}', {
 	attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service',
 	maxZoom: 8
 }).addTo(map)
-var iconSvg = `<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="14" cy="14" r="13" fill="#{{ colors[langs[lang][5]] }}" stroke="black" stroke-width="2"/>
-</svg>`
+var iconSvg = `{{ langs[lang][6] | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,
@@ -54,4 +66,5 @@ var icon = L.icon( {
         } );
 L.marker([{{ langs[lang][4] }}, {{ langs[lang][3] }}], {icon: icon}).bindTooltip("<strong>{{ langs[lang][1] }}</strong>").openTooltip().addTo(map)
 </script>
+{% endif %}
 {% include "foot.html" %}
