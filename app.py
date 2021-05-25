@@ -39,7 +39,7 @@ for i in langs:
   <polygon points="0,15 15,0 30,15 15,30" fill="#{colors[langs[i][5]]}" stroke="black" stroke-width="2"/>
 </svg>""")
     else:
-        langs[i].append(f"""<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg">
+        langs[i].append(f"""<svg viewBox="-2 -2 32 32" xmlns="http://www.w3.org/2000/svg">
   <circle cx="14" cy="14" r="13" fill="#{colors[langs[i][5]]}" stroke="black" stroke-width="2"/>
 </svg>""")
 

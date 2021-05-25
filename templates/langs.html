@@ -11,12 +11,15 @@
         {% for lang, info in langs.items()|sort(attribute='1.1') %}
         <a href="/languages/{{ lang }}">
         <div class="rounded shadow my-1 border-l-4 flex hover:shadow-lg hover:bg-gray-50" style="border-color: #{{ colors[langs[lang][5]] }};">
-            <div class="p-1 pl-2 w-1/2">{{ info[1] }} <span class="font-thin">[{{ info[0] }}]</span></div>
+            <div class="p-1 pl-2 w-1/4">{{ info[1] }} <span class="font-thin">[{{ info[0] }}]</span></div>
             <div class="p-1 w-1/4">
                 {{ info[5] }}
             </div>
             <div class="p-1 w-1/4">
                 {{ info[4] }}, {{ info[3] }}
+            </div>
+            <div class="p-1 w-1/4">
+                {{ info[6] }} reflexes
             </div>
         </div>
         </a>
@@ -31,7 +34,7 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical
 	maxZoom: 8
 }).addTo(map)
 {% for lang in langs %}
-var iconSvg = `{{ langs[lang][6] | safe }}`
+var iconSvg = `{{ langs[lang][7] | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,

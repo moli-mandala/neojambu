@@ -47,7 +47,7 @@ Dard,Dardic,indo1324,73,35,Dardic
 dh,Ashokan Prakrit: Dhauli,maha1305,85.839489,20.192372,MIA
 Dhp,Gandhari,maha1305,72.8291,33.756,MIA
 Dm,Dameli,dame1241,71.68,35.30,Dardic
-dod,Dodi,kash1277,74.33,34.17,Dardic
+dod,Dodi,kash1277,75.6208,33.0469,Dardic
 dog,Dogri,dogr1250,75.71,32.55,Western Pahari
 dr,Shina: Dras,shin1264,75.751684,34.430718,Dardic
 Drav,Dravidian,drav1251,78.83,10.52,non-IA
@@ -96,7 +96,7 @@ jij,Shina: Jijelut,shin1264,75.29,34.65,Dardic
 jmag,Jaina Magadhi Prakrit,maha1305,87.8550,22.9868,MIA
 jmh,Jaina Maharastri Prakrit,maha1305,87.8550,22.9868,MIA
 jt,Bangru: Jatu,hary1238,76.04,29.02,Western Hindi
-jub,North Jubbali,maha1287,77.53,31.01,Western Pahari
+jub,North Jubbali,maha1287,77.6629967,31.1094667,Western Pahari
 K,Kashmiri,kash1277,74.33,34.17,Dardic
 kach,Lahnda: Kachri,west2386,72.7097,31.1704,Lahndic
 Kaf,Nuristani,nuri1243,71,35,Nuristani
@@ -106,12 +106,12 @@ Kamd,Kati: Kamdesh,kati1270,71.3386,35.4099,Nuristani
 Kan,Kannaḍa,nucl1305,76.12,13.59,non-IA
 Kand,Kandia,indu1241,73.02,35.34,Dardic
 kar,Domari: Karachi,doma1258,47.5769,40.1431,Migratory
-kash,Kashmiri: Kishtawari,kash1277,74.33,34.17,Dardic
+kash,Kashmiri: Kishtawari,kash1277,75.7662,33.3116,Dardic
 Kat,Katarqalai,wota1240,70.86,34.70,Dardic
 kath,Gujarati: Kathiyavadi,guja1252,72.1519,21.7645,Gujaratic
 kb,Ashokan Prakrit: Kausambi,maha1305,81.392899,25.338984,MIA
-kc,Kochi,maha1287,77.53,31.01,Western Pahari
-ktg,Kotgarhi,maha1287,77.53,31.01,Western Pahari
+kc,Kochi,maha1287,77.625388,31.4516834,Western Pahari
+ktg,Kotgarhi,maha1287,77.47,31.31,Western Pahari
 kcch,Kutchi,kach1277,69.00,23.83,Sindhic
 kch,Pashai: Kachur-i Sala,nort2665,69.99,35.17,Dardic
 kgr,Kangri,kang1280,76.37,31.91,Western Pahari
@@ -121,11 +121,9 @@ khash,Khashali,bhad1241,75.87,33.29,Western Pahari
 khet,Khetrani,khet1238,70.28,30.48,Sindhic
 Kho,Khowar,khow1242,72.00,36.00,Dardic
 Khot,Khotanese,khot1251,79.04,38.33,non-IA
-kis,See kash,kash1277,74.33,34.17,Dardic
-kiuth,Kiunthali,maha1287,77.53,31.01,Western Pahari
+kiuth,Kiunthali,maha1287,77.3,31.033333,Western Pahari
 Kmd,Kati: Kamdesh,kati1270,71.3386,35.4099,Nuristani
 knd,Pashai: Kandak,nort2666,70.43,34.66,Dardic
-kng,See kgr,kang1280,76.37,31.91,Western Pahari
 Ko,Konkani,konk1267,74.1240,15.2993,Marathi-Konkani
 Koh,Kohistani,indu1241,73.02,35.34,Dardic
 koh,Shina: Kohistani,kohi1248,73.32,35.17,Dardic
@@ -139,7 +137,7 @@ kur,Pashai: Kurangali,nort2666,70.43,34.66,Dardic
 Kur,Kurukh,kuru1302,86.47,24.46,non-IA
 kurd,Pashai: Kurdari,nort2666,70.43,34.66,Dardic
 Kurd,Kurdish,kurd1259,45.81,35.65,non-IA
-ky,Maiya: Kanyawali,indu1241,73.02,35.34,Dardic
+ky,Indus Kohistani: Kanyawali,indu1241,73.02,35.34,Dardic
 L,Lahnda,west2386,72.7097,31.1704,Lahndic
 la,Sindhi: Lari,lari1254,67.8884947,24.1955515,Sindhic
 lagh,Pashai: Laghmani,sout2672,70.30,34.43,Dardic
@@ -151,7 +149,7 @@ lrudh,Khashali: Low Rudhari,bhad1241,75.87,33.29,Western Pahari
 ludh,Punjabi: Ludhiani,panj1256,75.8573,30.9010,Punjabic
 M,Marathi,mara1378,73.8567,18.5204,Marathi-Konkani
 mag,Bihari: Magahi,maga1260,85.33,25.09,Bihari
-Mai,Maiya,indu1241,73.02,35.34,Dardic
+Mai,Indus Kohistani,indu1241,73.02,35.34,Dardic
 Mal,Malayalam,mala1464,76.77,9.59,non-IA
 mald,Dhivehi,dhiv1236,73.54,1.93,Insular
 Malw,Malwai,malv1243,75.56,23.49,Bhil
@@ -206,7 +204,7 @@ Pers,Persian,west2369,53.30,32.90,non-IA
 Phal,Palula,phal1254,71.84,35.51,Dardic
 biori,Palula: Biori,nort2667,71.810718,35.464600,Dardic
 Pk,Prakrit,maha1305,74.71,19.18,MIA
-pog,Poguli,kash1277,74.33,34.17,Dardic
+pog,Poguli,kash1277,75.2771,33.3525,Dardic
 pol,European Romani: Polish,sint1235,16.50,47.50,Migratory
 poth,Pahari-Pothwari,paha1251,73.81,33.64,Lahndic
 pow,Punjabi: Powadhi,panj1256,76.38,30.34,Punjabic
@@ -215,11 +213,11 @@ Prj,Parji,parj1243,82.76,18.60,non-IA
 Psht,Pashto,cent1973,69.45,31.92,non-IA
 pun,Saraiki: Punchi,paha1251,73.81,33.64,Lahndic
 punl,Shina: Puniali,shin1264,75.29,34.65,Dardic
-ram,Rambani,kash1277,74.33,34.17,Dardic
+ram,Rambani,kash1277,75.1851361,33.2464046,Dardic
 rdh,Ashokan Prakrit: Radhia,maha1305,84.6442085,26.5439379,MIA
 Rj,Rajasthani,raja1256,76.20,26.47,Rajasthanic
 rod,Sinhala: Rodiya,sinh1246,81.00,8.00,Insular
-roh,Rohrui,maha1287,77.53,31.01,Western Pahari
+roh,Rohrui,maha1287,77.7524,31.2046,Western Pahari
 rp,Ashokan Prakrit: Rampurva,maha1305,84.696,26.8429,MIA
 ru,Ashokan Prakrit: Rupnath,maha1305,82.066667,24.583333,MIA
 rudh,Khashali: Rudhari,bhad1241,75.87,33.29,Western Pahari
@@ -246,10 +244,10 @@ Si,Sinhala,sinh1246,81.00,8.00,Insular
 Sik,Sikalgari,guja1252,71.10,22.69,Gujaratic
 sir,Sarazi,kull1236,77.38,31.83,Western Pahari
 sirm,Sirmauri,sirm1239,77.17,31.10,Western Pahari
-Sk,Sanskrit,sans1269,77.00,20.00,OIA
+Sk,Sanskrit,sans1269,72.36,34.04,OIA
 sn,Ashokan Prakrit: Sarnath,maha1305,83.0214,25.3811,MIA
 snj,Pashai: Sanjan,nort2665,69.99,35.17,Dardic
-sod,Shodochi,maha1287,77.53,31.01,Western Pahari
+sod,Shodochi,maha1287,77.4458,31.3183,Western Pahari
 Sogd,Sogdian,sogd1245,66.98,39.70,non-IA
 sop,Ashokan Prakrit: Bombay-Sopara,maha1305,72.8613,19.4154,MIA
 sp,European Romani: Spanish,vlax1238,3.7492,40.4637,Migratory
@@ -286,7 +284,7 @@ kbn,Kamtapuri: Bongaigaon,rang1265,90.5007068,26.4895061,Eastern
 krl,Rajbanshi: Rangeli,rajb1243,87.5099,26.4568,Eastern
 kmh,Rajbanshi: Mahayespur,rajb1243,88.0754,26.5186,Eastern
 kks,Surjapuri: Kishanganj,surj1235,87.9450,26.0982,Eastern
-vrac,Apabhramsha: Vrachada,maha1305,79.0,27.0,MIA
+vrac,Apabhramsha: Vrachada,maha1305,68,25,MIA
 OHG,Old High German,oldh1241,10,52,non-IA
 Toch,Tocharian,tokh1241,89.18,42.98,non-IA
 deg,Pashai: Gorayk (Degano),sout2672,70.9008,34.6458,Dardic

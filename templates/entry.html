@@ -39,7 +39,7 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical
 	maxZoom: 8
 }).addTo(map)
 {% for lang, entries in reflexes.items() %}
-var iconSvg = `{{ langs[lang][6] | safe }}`
+var iconSvg = `{{ langs[lang][7] | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,

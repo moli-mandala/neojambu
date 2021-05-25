@@ -8,10 +8,12 @@
 <div class="rounded shadow p-2 m-1 w-3/4">
     <h2 class="font-thin">Family</h2>
     <p class="border-l-4 pl-4">{{ langs[lang][5] }}</p>
-    <h2 class="font-thin">Glottolog</h2>
+    <h2 class="font-thin mt-1">Glottolog</h2>
     <p class="border-l-4 pl-4"><a href="https://glottolog.org/resource/languoid/id/{{ langs[lang][2] }}">{{ langs[lang][2] }}</a></p>
-    <h2 class="font-thin">Coordinates</h2>
+    <h2 class="font-thin mt-1">Coordinates</h2>
     <p class="border-l-4 pl-4">{{ langs[lang][4] }}, {{ langs[lang][3] }}</p>
+    <h2 class="font-thin mt-1">Reflexes</h2>
+    <p class="border-l-4 pl-4">{{ langs[lang][6] }}</p>
 </div>
 <div class="m-1 w-1/4">
     <div class="rounded shadow" style="width: 100%; height: 250px;" id="map">
@@ -25,7 +27,7 @@
         <div class="rounded shadow my-1 border-l-4 flex hover:shadow-lg hover:bg-gray-50" style="border-color: #{{ colors[langs[word[1]][5]] }};">
             <div class="p-1 pl-2 w-1/4">{{ langs[word[1]][1] }}</div>
             <div class="p-1 w-1/4">
-                <p><a href="/reflexes/{{ word[0] }}">{{ word[3] }}</a>{% if word[6] %} <span class="text-gray-400">/&#8288;{{ word[6] }}&#8288;/</span>{% endif %}{% if word[4] %} <span class="text-gray-400">‘&#8288;{{ word[4] }}&#8288;’</span>{% endif %}</p>
+                <p><a href="/reflexes/{{ word[0] }}">{{ word[3] }}</a>{% if word[6] %} <span class="text-gray-400">/&#8288;{{ word[6] }}&#8288;/</span>{% endif %}{% if word[4] %} <span class="text-gray-400">‘&#8288;{{ word[4] | striptags }}&#8288;’</span>{% endif %}</p>
             </div>
             <div class="p-1 w-1/4">
                 <p><a href="/entries/{{ word[2] }}">{{ word[10] }} <span class="font-thin">[{{ word[2] }}]</span></a></p>
@@ -58,7 +60,7 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical
 	attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service',
 	maxZoom: 8
 }).addTo(map)
-var iconSvg = `{{ langs[lang][6] | safe }}`
+var iconSvg = `{{ langs[lang][7] | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,
