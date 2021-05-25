@@ -45,9 +45,9 @@ cur.execute('ALTER TABLE Languages ADD count TEXT')
 for lang in lang_map:
     cur.execute('UPDATE Languages SET count=? WHERE id=?', (lang_map[lang], lang))
 
-cur.execute('ALTER TABLE Entries ADD count TEXT')
-for entry in entry_map:
-    cur.execute('UPDATE Entries SET count=? WHERE id=?', (entry_map[entry], entry))
+# cur.execute('ALTER TABLE Entries ADD count TEXT')
+# for entry in entry_map:
+#     cur.execute('UPDATE Entries SET count=? WHERE id=?', (entry_map[entry], entry))
 
 con.commit()
 con.close()

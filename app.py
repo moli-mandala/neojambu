@@ -48,12 +48,17 @@ def hello_world():
     return render_template('index.html')
 
 @app.route("/reflexes")
-def reflexes():
-    page = int(request.args.get('page', 1))
+@app.route("/reflexes/<reflex>")
+def reflexes(reflex=None):
     con = sqlite3.connect('data.db')
     cur = con.cursor()
-    cur.execute('SELECT * FROM Reflexes limit ?, ?', (page * 200 - 200, 200))
-    return render_template('reflex.html', langs=langs, colors=colors, reflexes=cur.fetchall(), page=page)
+    if reflex:
+        cur.execute('SELECT * FROM Reflexes WHERE number=?', (reflex,))
+        return render_template('reflex.html', langs=langs, colors=colors, reflex=cur.fetchall()[0])
+    else:
+        page = int(request.args.get('page', 1))
+        cur.execute('SELECT * FROM Reflexes limit ?, ?', (page * 200 - 200, 200))
+        return render_template('reflexes.html', langs=langs, colors=colors, reflexes=cur.fetchall(), page=page)
 
 @app.route("/languages")
 @app.route("/languages/<lang>")
@@ -64,7 +69,7 @@ def languages(lang=None):
         cur = con.cursor()
         # cur.execute('SELECT * FROM Reflexes WHERE language=?', (lang,))
         cur.execute('SELECT * FROM Reflexes WHERE language=? limit ?, ?', (lang, page * 200 - 200, 200))
-        return render_template('reflex.html', lang=lang, langs=langs, colors=colors, reflexes=cur.fetchall(), page=page)
+        return render_template('reflexes.html', lang=lang, langs=langs, colors=colors, reflexes=cur.fetchall(), page=page)
     else:
         return render_template('langs.html', langs=langs, colors=colors)
 
@@ -79,7 +84,7 @@ def entries(entry=None, lang=None):
     if entry:
         if lang:
             cur.execute('SELECT * FROM Reflexes WHERE entry=? AND language=?', (entry, lang))
-            return render_template('reflex.html', lang=lang, langs=langs, colors=colors, entry=entry, reflexes=cur.fetchall())
+            return render_template('reflexes.html', lang=lang, langs=langs, colors=colors, entry=entry, reflexes=cur.fetchall())
         else:
             print('individual', str(entry))
             cur.execute('SELECT * FROM Entries WHERE number=?', (entry,))
