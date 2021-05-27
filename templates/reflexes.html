@@ -1,6 +1,6 @@
 {% include "head.html" %}
 <h1 class="text-4xl">
-    <span class="font-semibold">{% if lang %}{% if entry %}<a class="text-red-700 hover:text-red-900" href="/languages/{{ lang }}">{% endif %}{{ langs[lang][1] }}{% if entry %}</a>{% else %} <span class="font-thin">[{{ lang[0] }}]</span>{% endif %}{% else %}Reflexes{% endif %}</span>
+    <span class="font-semibold">{% if lang %}{% if entry %}<a class="text-red-700 hover:text-red-900" href="/languages/{{ lang }}">{% endif %}{{ langs[lang][1] }}{% if entry %}</a>{% else %} <span class="font-thin">[{{ lang }}]</span>{% endif %}{% else %}Reflexes{% endif %}</span>
     {% if entry %} <a class="text-red-700 hover:text-red-900 font-thin" href="/entries/{{ entry }}" class="font-light">[{{ entry }}]</a>{% endif %}
 </h1>
 {% if lang %}

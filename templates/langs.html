@@ -40,7 +40,7 @@ var icon = L.icon( {
             iconUrl: iconUrl,
             iconSize: [15, 15]
         } );
-L.marker([{{ langs[lang][4] }}, {{ langs[lang][3] }}], {icon: icon}).bindTooltip("<strong>{{ langs[lang][1] }}</strong>").openTooltip().addTo(map)
+L.marker([{{ langs[lang][4] }}, {{ langs[lang][3] }}], {icon: icon}).bindTooltip("<p><strong>{{ langs[lang][1] }}</strong></p><p>{{ langs[lang][6] }} reflexes</p>").openTooltip().addTo(map)
 {% endfor %}
 </script>
 {% include "foot.html" %}

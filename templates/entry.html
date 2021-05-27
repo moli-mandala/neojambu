@@ -11,24 +11,15 @@
 <div class="mt-5">
     <div class="grid w-full">
         {% for lang, entries in reflexes.items() %}
-        <a href="/entries/{{ entry[0] }}/{{ lang }}">
         <div class="rounded shadow my-1 border-l-4 flex transition hover:shadow-lg hover:bg-gray-50" style="border-color: #{{ colors[langs[lang][5]] }};">
-            <div class="p-1 pl-2 w-1/4">{{ langs[lang][1] }}</div>
+            <div class="p-1 pl-2 w-1/4"><a class="hover:text-red-900" href="/languages/{{ lang }}">{{ langs[lang][1] }}</a></div>
             <div class="p-1 w-3/4">
                 {% for entry in entries %}
-                    <p><span>{{ entry[3] }}</span>{% if entry[4] %} <span class="text-gray-400">‘&#8288;{{ entry[4] }}&#8288;’</span>{% endif %}{% if entry[6] %} <span class="text-gray-400">/&#8288;{{ entry[6] }}&#8288;/</span>{% endif %}</p>
+                    <p><a class="text-red-700 hover:text-red-900" href="/reflexes/{{ entry[0] }}">{{ entry[3] }}</a>{% if entry[4] %} <span class="text-gray-400">‘&#8288;{{ entry[4] }}&#8288;’</span>{% endif %}{% if entry[6] %} <span class="text-gray-400">/&#8288;{{ entry[6] }}&#8288;/</span>{% endif %}</p>
                 {% endfor %}
             </div>
         </div>
-        </a>
         {% endfor %}
-        <!-- {% for lang, entries in reflexes.items() %}
-        <div class="table-row w-full p-2 pl-3 border-l-4" style="border-color: #{{ colors[langs[lang][5]] }};">
-            <div class="table-cell"><span class="text-lg">{{ lang }}</span></div>
-            {% for entry in entries %}{% if loop.index != 1 %}, {% endif %}<span>{{ entry[3] | safe }}</span>{% if entry[4] %} <span class="text-gray-400">‘&#8288;{{ entry[4] }}&#8288;’</span>{% endif %}{% if entry[6] %} <span class="text-gray-400">/&#8288;{{ entry[6] }}&#8288;/</span>{% endif %}{% endfor %}
-        </div>
-        </a>
-        {% endfor %} -->
     </div>
 </div>
 <script>

@@ -33,13 +33,17 @@ with open('cldf/forms.csv', 'r') as fin:
     for i, row in enumerate(entries):
         if i == 0: continue
 
-        if row[1] not in lang_map: lang_map[row[1]] = 0
-        lang_map[row[1]] += 1
-        if row[2] not in entry_map: entry_map[row[2]] = 0
-        entry_map[row[2]] += 1
-
-        row.append(entry_name[row[2]])
-        cur.execute('INSERT INTO Reflexes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', tuple(row))
+        for entry in row[2].split(';'):
+            for entry in entry.split('+'):
+                if row[1] not in lang_map: lang_map[row[1]] = 0
+                lang_map[row[1]] += 1
+                if entry not in entry_map: entry_map[entry] = 0
+                entry_map[entry] += 1
+                
+                temp = row
+                row[2] = entry
+                # print(row, len(row))
+                cur.execute('INSERT INTO Reflexes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', tuple(temp + [entry_name[entry]]))
 
 cur.execute('ALTER TABLE Languages ADD count TEXT')
 for lang in lang_map:
