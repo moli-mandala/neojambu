@@ -63,8 +63,33 @@ def reflexes(reflex=None):
 
 @app.route("/languages")
 @app.route("/languages/<lang>")
-def languages(lang=None):
-    if lang:
+@app.route("/languages/<lang>/<lang2>")
+def languages(lang=None, lang2=None):
+    if lang and lang2:
+        page = int(request.args.get('page', 1))
+        con = sqlite3.connect('data.db')
+        cur = con.cursor()
+        cur.execute('SELECT * FROM Reflexes WHERE language=? ORDER BY entry*1', (lang,))
+        lang_data = [(x[2], x) for x in cur.fetchall()]
+        cur.execute('SELECT * FROM Reflexes WHERE language=? ORDER BY entry*1', (lang2,))
+        lang2_data = [(x[2], x) for x in cur.fetchall()]
+        lang_dict, lang2_dict = {}, {}
+
+        for i in lang_data:
+            if i[0] not in lang_dict: lang_dict[i[0]] = []
+            lang_dict[i[0]].append(i[1])
+        for i in lang2_data:
+            if i[0] not in lang2_dict: lang2_dict[i[0]] = []
+            lang2_dict[i[0]].append(i[1])
+
+        both = []
+        for i in lang_dict:
+            if i in lang2_dict:
+                both.append(i)
+        print(len(both))
+        return render_template('compare.html', langs=langs, colors=colors, both=both, lang=lang, lang2=lang2, lang_dict=lang_dict, lang2_dict=lang2_dict)
+
+    elif lang:
         page = int(request.args.get('page', 1))
         con = sqlite3.connect('data.db')
         cur = con.cursor()
