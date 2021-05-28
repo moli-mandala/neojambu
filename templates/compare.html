@@ -1,6 +1,6 @@
 {% include "head.html" %}
 <h1 class="text-4xl">
-    <span class="font-semibold">{{ langs[lang][1] }}</span> vs. <span class="font-semibold">{{ langs[lang2][1] }}</span>
+    <span class="font-semibold">{{ langs[lang][1] }}</span> vs. <span class="font-semibold">{{ langs[lang2][1] }}</span> ({{both | length}} matches)
 </h1>
 {% if lang %}
 <div class="flex mt-8 w-full">
@@ -33,7 +33,7 @@
 </div>
 {% endif %}
 <div class="mt-5">
-    <div class="table">
+    <div class="table w-full">
         {% for key in both %}
         <div class="table-row">
             <div class="table-cell w-1/3">
