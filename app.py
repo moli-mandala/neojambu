@@ -27,6 +27,9 @@ colors = {
     "Bhil": "93C572",
     "Halbic": "FF568E"
 }
+order = ['non-IA', 'Nuristani', 'Dardic', 'Western Pahari', 'Central Pahari', 'Eastern Pahari', 'Lahndic', 'Punjabic',
+    'Sindhic', 'Gujaratic', 'Rajasthanic', 'Bhil', 'Marathi-Konkani', 'Halbic', 'Insular', 'Eastern', 'Bihari',
+    'Eastern Hindi', 'Western Hindi', 'Migratory', 'MIA', 'OIA']
 con = sqlite3.connect('data.db')
 cur = con.cursor()
 cur.execute('SELECT * FROM Languages')
@@ -124,7 +127,7 @@ def entries(entry=None, lang=None):
             cur.execute('SELECT * FROM Entries WHERE headword LIKE ? limit ?, ?', ('%' + search + '%', page * 200 - 200, 200))
         else:
             cur.execute('SELECT * FROM Entries limit ?, ?', (page * 200 - 200, 200))
-        return render_template('entries.html', entries=cur.fetchall(), page=page)
+        return render_template('entries.html', entries=cur.fetchall(), page=page, colors=colors, order=order)
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support

@@ -7,11 +7,14 @@ os.remove('data.db')
 con = sqlite3.connect('data.db')
 cur = con.cursor()
 
+clade = {}
+
 cur.execute('CREATE TABLE Languages (id TEXT, name TEXT, glottocode TEXT, long TEXT, lat TEXT, clade TEXT)')
 with open('cldf/languages.csv', 'r') as fin:
     entries = csv.reader(fin)
     for i, row in enumerate(entries):
         if i == 0: continue
+        clade[row[0]] = row[5]
         cur.execute('INSERT INTO Languages VALUES (?, ?, ?, ?, ?, ?)', tuple(row))
 
 cur.execute('CREATE TABLE Entries (number TEXT, headword TEXT, description TEXT)')
@@ -28,6 +31,8 @@ cur.execute('CREATE TABLE Reflexes (number TEXT, language TEXT, entry TEXT, form
 
 lang_map = {}
 entry_map = {}
+entry_clade = {}
+
 with open('cldf/forms.csv', 'r') as fin:
     entries = csv.reader(fin)
     for i, row in enumerate(entries):
@@ -42,16 +47,27 @@ with open('cldf/forms.csv', 'r') as fin:
                 
                 temp = row
                 row[2] = entry
+
+                data = tuple(temp + [entry_name[entry]])
+
+                if entry not in entry_clade:
+                    entry_clade[entry] = set()
+                entry_clade[entry].add(clade[data[1]])
+
                 # print(row, len(row))
-                cur.execute('INSERT INTO Reflexes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', tuple(temp + [entry_name[entry]]))
+                cur.execute('INSERT INTO Reflexes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', data)
 
 cur.execute('ALTER TABLE Languages ADD count TEXT')
 for lang in lang_map:
     cur.execute('UPDATE Languages SET count=? WHERE id=?', (lang_map[lang], lang))
 
-# cur.execute('ALTER TABLE Entries ADD count TEXT')
-# for entry in entry_map:
-#     cur.execute('UPDATE Entries SET count=? WHERE id=?', (entry_map[entry], entry))
+cur.execute('ALTER TABLE Entries ADD count TEXT')
+for entry in entry_map:
+    cur.execute('UPDATE Entries SET count=? WHERE number=?', (entry_map[entry], entry))
+
+cur.execute('ALTER TABLE Entries ADD clades TEXT')
+for entry in entry_clade:
+    cur.execute('UPDATE Entries SET clades=? WHERE number=?', (','.join(entry_clade[entry]), entry))
 
 con.commit()
 con.close()

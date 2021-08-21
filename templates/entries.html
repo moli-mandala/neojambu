@@ -4,7 +4,10 @@
     <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {% for entry in entries %}
         <a class="m-1" href="/entries/{{ entry[0] }}">
-        <div class="h-full w-full shadow rounded p-2 pl-3 border-l-4 hover:shadow-lg transition">
+        <div class="relative h-full w-full shadow rounded p-2 pl-3 border-l-4 hover:shadow-lg transition">
+            <div class="absolute top-0 right-0 text-sm">
+                {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if clade in entry[4] %}style="background-color: #{{ colors[clade] }};"{% endif %}></div>{% endfor %}
+            </div>
             <p>{{ entry[1] }} <span class="font-thin">[{{ entry[0] }}]</span></p>
         </div>
         </a>
