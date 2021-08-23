@@ -27,9 +27,9 @@ colors = {
     "Bhil": "93C572",
     "Halbic": "FF568E"
 }
-order = ['non-IA', 'Nuristani', 'Dardic', 'Western Pahari', 'Central Pahari', 'Eastern Pahari', 'Lahndic', 'Punjabic',
-    'Sindhic', 'Gujaratic', 'Rajasthanic', 'Bhil', 'Marathi-Konkani', 'Halbic', 'Insular', 'Eastern', 'Bihari',
-    'Eastern Hindi', 'Western Hindi', 'Migratory', 'MIA', 'OIA']
+order = ['non-IA', 'Nuristani', 'Dardic', 'Western Pahari', 'Central Pahari', 'Eastern Pahari', 'Punjabic', 'Lahndic',
+    'Sindhic', 'Gujaratic', 'Rajasthanic', 'Bhil', 'Marathi-Konkani', 'Halbic', 'Eastern', 'Bihari',
+    'Eastern Hindi', 'Western Hindi', 'Migratory', 'Insular', 'MIA', 'OIA']
 con = sqlite3.connect('data.db')
 cur = con.cursor()
 cur.execute('SELECT * FROM Languages')
@@ -121,7 +121,7 @@ def entries(entry=None, lang=None):
             if reflex[1] not in ref: ref[reflex[1]] = []
             ref[reflex[1]].append(reflex)
         print(ref)
-        return render_template('entry.html', entry=entry_info, reflexes=ref, langs=langs, colors=colors)
+        return render_template('entry.html', entry=entry_info, reflexes=ref, langs=langs, colors=colors, order=order)
     else:
         if search:
             cur.execute('SELECT * FROM Entries WHERE headword LIKE ? limit ?, ?', ('%' + search + '%', page * 200 - 200, 200))

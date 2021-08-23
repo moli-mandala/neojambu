@@ -1,6 +1,7 @@
 import sqlite3
 import csv
 import os
+from unicodedata import normalize
 
 os.remove('data.db')
 
@@ -14,6 +15,7 @@ with open('cldf/languages.csv', 'r') as fin:
     entries = csv.reader(fin)
     for i, row in enumerate(entries):
         if i == 0: continue
+        row = [normalize('NFC', x) for x in row]
         clade[row[0]] = row[5]
         cur.execute('INSERT INTO Languages VALUES (?, ?, ?, ?, ?, ?)', tuple(row))
 
@@ -24,6 +26,7 @@ with open('cldf/parameters.csv', 'r') as fin:
     entries = csv.reader(fin)
     for i, row in enumerate(entries):
         if i == 0: continue
+        row = [normalize('NFC', x) for x in row]
         entry_name[row[0]] = row[1]
         cur.execute('INSERT INTO Entries (number, headword, description) VALUES (?, ?, ?)', (str(row[0]), str(row[1]), str(row[3])))
 
@@ -37,6 +40,7 @@ with open('cldf/forms.csv', 'r') as fin:
     entries = csv.reader(fin)
     for i, row in enumerate(entries):
         if i == 0: continue
+        row = [normalize('NFC', x) for x in row]
 
         for entry in row[2].split(';'):
             for entry in entry.split('+'):
