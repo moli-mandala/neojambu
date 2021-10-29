@@ -1,7 +1,7 @@
 {% include "head.html" %}
 <h1 class="text-4xl font-semibold">{{ entry[1] }} <span class="font-light">[{{ entry[0] }}]</span></h1>
 <div class="relative rounded shadow mt-8 p-2">
-    <h2 class="font-thin"><a href="/references/cdial">Turner, Ralph Lilley:</a></h2>
+    <h2 class="font-thin"><a href="/references/cdial">Description:</a></h2>
     <p class="border-l-4 pl-4">{{ entry[2] | safe }}</p>
     <div class="absolute top-0 right-0 text-sm">
         {% for clade in order %}<div class="clade-block-lg" title="{{ clade }}"{% if clade in entry[4] %}style="background-color: #{{ colors[clade] }};"{% endif %}></div>{% endfor %}

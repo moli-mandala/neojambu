@@ -25,7 +25,13 @@ colors = {
     "non-IA": "FAF9F6",
     "Nuristani": "FF10F0",
     "Bhil": "93C572",
-    "Halbic": "FF568E"
+    "Halbic": "FF568E",
+    "Brahui": "49796B",
+    "South Dravidian I": "74C365",
+    "South Dravidian II": "98FB98",
+    "Central Dravidian": "29AB87",
+    "North Dravidian": "4B6F44",
+    "Old Dravidian": "#679267"
 }
 order = ['non-IA', 'Nuristani', 'Dardic', 'Western Pahari', 'Central Pahari', 'Eastern Pahari', 'Punjabic', 'Lahndic',
     'Sindhic', 'Gujaratic', 'Rajasthanic', 'Bhil', 'Marathi-Konkani', 'Halbic', 'Eastern', 'Bihari',
@@ -89,7 +95,6 @@ def languages(lang=None, lang2=None):
         for i in lang_dict:
             if i in lang2_dict:
                 both.append(i)
-        print(len(both))
         return render_template('compare.html', langs=langs, colors=colors, both=both, lang=lang, lang2=lang2, lang_dict=lang_dict, lang2_dict=lang2_dict)
 
     elif lang:
@@ -107,7 +112,7 @@ def languages(lang=None, lang2=None):
 def entries(entry=None, lang=None):
     page = int(request.args.get('page', 1))
     search = request.args.get('entry', None)
-    print(entry, lang, page)
+    # print(entry, lang, page)
     con = sqlite3.connect('data.db')
     cur = con.cursor()
     if entry:
@@ -120,7 +125,7 @@ def entries(entry=None, lang=None):
         for reflex in reflexes:
             if reflex[1] not in ref: ref[reflex[1]] = []
             ref[reflex[1]].append(reflex)
-        print(ref)
+        # print(ref)
         return render_template('entry.html', entry=entry_info, reflexes=ref, langs=langs, colors=colors, order=order)
     else:
         if search:

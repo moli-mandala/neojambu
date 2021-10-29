@@ -2,6 +2,7 @@ import sqlite3
 import csv
 import os
 from unicodedata import normalize
+from collections import defaultdict
 
 os.remove('data.db')
 
@@ -32,9 +33,9 @@ with open('cldf/parameters.csv', 'r') as fin:
 
 cur.execute('CREATE TABLE Reflexes (number TEXT, language TEXT, entry TEXT, form TEXT, gloss TEXT, native TEXT, phonemic TEXT, cognateset TEXT, notes TEXT, source TEXT, entryTitle TEXT)')
 
-lang_map = {}
-entry_map = {}
-entry_clade = {}
+lang_map = defaultdict(int)
+entry_map = defaultdict(int)
+entry_clade = defaultdict(set)
 
 with open('cldf/forms.csv', 'r') as fin:
     entries = csv.reader(fin)
@@ -44,9 +45,7 @@ with open('cldf/forms.csv', 'r') as fin:
 
         for entry in row[2].split(';'):
             for entry in entry.split('+'):
-                if row[1] not in lang_map: lang_map[row[1]] = 0
                 lang_map[row[1]] += 1
-                if entry not in entry_map: entry_map[entry] = 0
                 entry_map[entry] += 1
                 
                 temp = row
@@ -54,8 +53,6 @@ with open('cldf/forms.csv', 'r') as fin:
 
                 data = tuple(temp + [entry_name[entry]])
 
-                if entry not in entry_clade:
-                    entry_clade[entry] = set()
                 entry_clade[entry].add(clade[data[1]])
 
                 # print(row, len(row))
