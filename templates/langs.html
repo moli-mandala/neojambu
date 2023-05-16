@@ -7,19 +7,19 @@
     </div>
 </div>
 <div class="mt-5">
-    <div class="grid w-full">
-        {% for lang, info in langs.items()|sort(attribute='1.1') %}
-        <a href="/languages/{{ lang }}">
-        <div class="rounded shadow my-1 border-l-4 flex hover:shadow-lg hover:bg-gray-50" style="border-color: #{{ colors[langs[lang][5]] }};">
-            <div class="p-1 pl-2 w-1/4">{{ info[1] }} <span class="font-thin">[{{ info[0] }}]</span></div>
-            <div class="p-1 w-1/4">
-                {{ info[5] }}
+    <div class="grid">
+        {% for lang in langs %}
+        <a href="/languages/{{ lang.id }}">
+        <div class="grid-row" style="border-color: #{{ lang.color }};">
+            <div>{{ lang.name }} <span class="font-thin">[{{ lang.id }}]</span></div>
+            <div>
+                {{ lang.clade }}
             </div>
-            <div class="p-1 w-1/4">
-                {{ info[4] }}, {{ info[3] }}
+            <div>
+                {{ lang.lat }}, {{ lang.long }}
             </div>
-            <div class="p-1 w-1/4">
-                {{ info[6] }} reflexes
+            <div>
+                {{ lang.lemma_count }} reflexes
             </div>
         </div>
         </a>
@@ -34,13 +34,13 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical
 	maxZoom: 8
 }).addTo(map)
 {% for lang in langs %}
-var iconSvg = `{{ langs[lang][7] | safe }}`
+var iconSvg = `{{ lang.to_map_marker() | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,
             iconSize: [15, 15]
         } );
-L.marker([{{ langs[lang][4] }}, {{ langs[lang][3] }}], {icon: icon}).bindTooltip("<p><strong>{{ langs[lang][1] }}</strong></p><p>{{ langs[lang][6] }} reflexes</p>").openTooltip().addTo(map)
+L.marker([{{ lang.lat }}, {{ lang.long }}], {icon: icon}).bindTooltip("<p><strong>{{ lang.name }}</strong></p><p>{{ lang.lemma_count }} reflexes</p>").openTooltip().addTo(map)
 {% endfor %}
 </script>
 {% include "foot.html" %}

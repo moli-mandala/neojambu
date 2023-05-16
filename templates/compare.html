@@ -1,88 +1,96 @@
 {% include "head.html" %}
-<h1 class="text-4xl">
-    <span class="font-semibold">{{ langs[lang][1] }}</span> vs. <span class="font-semibold">{{ langs[lang2][1] }}</span> ({{both | length}} matches)
+<h1>
+    <span>{{ lang1.name }}</span> <span class="font-thin">vs.</span> <span>{{ lang2.name }}</span> <span class="font-thin">({{both | length}} matches)</span>
 </h1>
-{% if lang %}
-<div class="flex mt-8 w-full">
-<div class="m-1 w-1/3">
-    <div class="rounded shadow" style="width: 100%; height: 250px;" id="map">
+{% if lang1 %}
+<div class="lang-box">
+<div style="width: 33%;">
+    <div style="width: 100%; height: 250px;" id="map">
     </div>
 </div>
-<div class="rounded shadow p-2 m-1 w-1/3">
-    <h2 class="font-semibold text-xl">{{ langs[lang][1] }}</h2>
-    <h2 class="font-thin">Family</h2>
-    <p class="border-l-4 pl-4">{{ langs[lang][5] }}</p>
-    <h2 class="font-thin mt-1">Glottolog</h2>
-    <p class="border-l-4 pl-4"><a href="https://glottolog.org/resource/languoid/id/{{ langs[lang][2] }}">{{ langs[lang][2] }}</a></p>
-    <h2 class="font-thin mt-1">Coordinates</h2>
-    <p class="border-l-4 pl-4">{{ langs[lang][4] }}, {{ langs[lang][3] }}</p>
-    <h2 class="font-thin mt-1">Reflexes</h2>
-    <p class="border-l-4 pl-4">{{ langs[lang][6] }}</p>
+<div style="width: 33%;">
+    <h2>{{ lang1.name }}</h2>
+    <div class="grid" style="margin-top: 0;">
+        <div class="grid-row">
+            <p>Family</p>
+            <p>{{ lang1.clade }}</p>
+        </div>
+        <div class="grid-row">
+            <p>Glottolog</p>
+            <p><a href="https://glottolog.org/resource/languoid/id/{{ lang1.glottocode }}">{{ lang1.glottocode }}</a></p>
+        </div>
+        <div class="grid-row">
+            <p>Coordinates</p>
+            <p>{{ lang1.lat }}, {{ lang1.long }}</p>
+        </div>
+        <div class="grid-row">
+            <p>Reflexes</p>
+            <p>{{ lang1.lemma_count }}</p>
+        </div>
+    </div>
 </div>
-<div class="rounded shadow p-2 m-1 w-1/3">
-    <h2 class="font-semibold text-xl">{{ langs[lang2][1] }}</h2>
-    <h2 class="font-thin">Family</h2>
-    <p class="border-l-4 pl-4">{{ langs[lang2][5] }}</p>
-    <h2 class="font-thin mt-1">Glottolog</h2>
-    <p class="border-l-4 pl-4"><a href="https://glottolog.org/resource/languoid/id/{{ langs[lang2][2] }}">{{ langs[lang2][2] }}</a></p>
-    <h2 class="font-thin mt-1">Coordinates</h2>
-    <p class="border-l-4 pl-4">{{ langs[lang2][4] }}, {{ langs[lang2][3] }}</p>
-    <h2 class="font-thin mt-1">Reflexes</h2>
-    <p class="border-l-4 pl-4">{{ langs[lang2][6] }}</p>
+<div style="width: 33%;">
+    <h2>{{ lang2.name }}</h2>
+    <div class="grid" style="margin-top: 0;">
+        <div class="grid-row">
+            <p>Family</p>
+            <p>{{ lang2.clade }}</p>
+        </div>
+        <div class="grid-row">
+            <p>Glottolog</p>
+            <p><a href="https://glottolog.org/resource/languoid/id/{{ lang2.glottocode }}">{{ lang2.glottocode }}</a></p>
+        </div>
+        <div class="grid-row">
+            <p>Coordinates</p>
+            <p>{{ lang2.lat }}, {{ lang2.long }}</p>
+        </div>
+        <div class="grid-row">
+            <p>Reflexes</p>
+            <p>{{ lang2.lemma_count }}</p>
+        </div>
+    </div>
 </div>
 </div>
 {% endif %}
 <div class="mt-5">
-    <div class="table w-full">
+    <div class="grid">
         {% for key in both %}
-        <div class="table-row">
-            <div class="table-cell w-1/3">
-                <div class="m-1">
-                    <a class="text-red-700 hover:text-red-900" href="/entries/{{ key }}">{{ lang_dict[key][0][10] }} <span class="font-thin">[{{ key }}]</a></span>
-                </div>
+        <div class="grid-row">
+            <p><a href="/entries/{{ key }}">{{ lang_dict[key][0].origin_lemma.word }} <span class="font-thin">[{{ key }}]</a></p>
+            <div>
+                {% for entry in lang_dict[key] %}
+                    <p><a href="/reflexes/{{ entry.id }}">{{ entry.word }}</a>{% if entry.gloss %} <span class="muted">‘&#8288;{{ entry.gloss }}&#8288;’</span>{% endif %}{% if entry.phonemic %} <span class="muted">/&#8288;{{ entry.phonemic }}&#8288;/</span>{% endif %}</p>
+                {% endfor %}
             </div>
-            <div class="table-cell w-1/3 h-full">
-                <div class="m-1 h-full rounded shadow border-l-4 flex hover:shadow-lg hover:bg-gray-50" style="border-color: #{{ colors[langs[lang][5]] }};">
-                    <div class="p-1 w-full pl-2">
-                        {% for entry in lang_dict[key] %}
-                            <p><a class="text-red-700 hover:text-red-900" href="/reflexes/{{ entry[0] }}">{{ entry[3] }}</a>{% if entry[4] %} <span class="text-gray-400">‘&#8288;{{ entry[4] }}&#8288;’</span>{% endif %}{% if entry[6] %} <span class="text-gray-400">/&#8288;{{ entry[6] }}&#8288;/</span>{% endif %}</p>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-            <div class="table-cell w-1/3 h-full">
-                <div class="m-1 h-full rounded shadow border-l-4 flex hover:shadow-lg hover:bg-gray-50" style="border-color: #{{ colors[langs[lang2][5]] }};">
-                    <div class="p-1 w-full pl-2">
-                        {% for entry in lang2_dict[key] %}
-                            <p><a class="text-red-700 hover:text-red-900" href="/reflexes/{{ entry[0] }}">{{ entry[3] }}</a>{% if entry[4] %} <span class="text-gray-400">‘&#8288;{{ entry[4] }}&#8288;’</span>{% endif %}{% if entry[6] %} <span class="text-gray-400">/&#8288;{{ entry[6] }}&#8288;/</span>{% endif %}</p>
-                        {% endfor %}
-                    </div>
-                </div>
+            <div>
+                {% for entry in lang2_dict[key] %}
+                    <p><a href="/reflexes/{{ entry.id }}">{{ entry.word }}</a>{% if entry.gloss %} <span class="muted">‘&#8288;{{ entry.gloss }}&#8288;’</span>{% endif %}{% if entry.phonemic %} <span class="muted">/&#8288;{{ entry.phonemic }}&#8288;/</span>{% endif %}</p>
+                {% endfor %}
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
 <script>
-var map = L.map('map').setView([({{ langs[lang][4] }} + {{ langs[lang2][4] }}) / 2, ({{ langs[lang][3] }} + {{ langs[lang2][3] }}) / 2], 2);
+var map = L.map('map').setView([({{ lang1.lat }} + {{ lang2.lat }}) / 2, ({{ lang1.long }} + {{ lang2.long }}) / 2], 2);
 
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}', {
 	attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service',
 	maxZoom: 8
 }).addTo(map)
-var iconSvg = `{{ langs[lang][7] | safe }}`
+var iconSvg = `{{ lang1.to_map_marker() | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,
             iconSize: [15, 15]
         } );
-L.marker([{{ langs[lang][4] }}, {{ langs[lang][3] }}], {icon: icon}).bindTooltip("<strong>{{ langs[lang][1] }}</strong>").openTooltip().addTo(map)
-var iconSvg = `{{ langs[lang2][7] | safe }}`
+L.marker([{{ lang1.lat }}, {{ lang1.long }}], {icon: icon}).bindTooltip("<strong>{{ lang1.name }}</strong>").openTooltip().addTo(map)
+var iconSvg = `{{ lang2.to_map_marker() | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,
             iconSize: [15, 15]
         } );
-L.marker([{{ langs[lang2][4] }}, {{ langs[lang2][3] }}], {icon: icon}).bindTooltip("<strong>{{ langs[lang2][1] }}</strong>").openTooltip().addTo(map)
+L.marker([{{ lang2.lat }}, {{ lang2.long }}], {icon: icon}).bindTooltip("<strong>{{ lang2.name }}</strong>").openTooltip().addTo(map)
 </script>
 {% include "foot.html" %}

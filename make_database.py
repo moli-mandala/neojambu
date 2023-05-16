@@ -1,74 +1,151 @@
-import sqlite3
-import csv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from models import Language, Lemma, Reference, Concept, Base
+from typing import List
+
 import os
-from unicodedata import normalize
+import csv
+from tqdm import tqdm
 from collections import defaultdict
 
-os.remove('data.db')
+colors = {
+    "OIA": "E2DFD2",
+    "MIA": "FFDEAD",
+    "Pashai": "FFD6F6",
+    "Chitrali": "FFACEF",
+    "Shinaic": "FF81E6",
+    "Kohistani": "FF25D5",
+    "Kashmiric": "FF00CD",
+    "Kunar": "ff68e0",
+    "Western Pahari": "B94E16",
+    "Central Pahari": "9E521B",
+    "Eastern Pahari": "79421B",
+    "Lahndic": "a4d6f5",
+    "Punjabic": "7164FF",
+    "Sindhic": "0066FF",
+    "Gujaratic": "00CF4A",
+    "Rajasthanic": "6BCD00",
+    "Bhil": "09AD02",
+    "Khandeshi": "2FFF2F",
+    "Marathi-Konkani": "D50000",
+    "Halbic": "AB8900",
+    "Insular": "AC0000",
+    "Eastern": "FFDE54",
+    "Bihari": "FFCD00",
+    "Eastern Hindi": "FF9A54",
+    "Western Hindi": "FF6600",
+    "Migratory": "63666A",
+    "Nuristani": "9132a8",
+    "Brahui": "49796B",
+    "Old Dravidian": "679267",
+    "South Dravidian I": "74C365",
+    "South Dravidian II": "98FB98",
+    "Central Dravidian": "29AB87",
+    "North Dravidian": "4B6F44",
+    "Munda": "00ffd0",
+    "Burushaski": "f3ff05",
+    "Nihali": "ff9a00",
+    "Other": "FAF9F6",
+}
+order = list(colors.keys())
 
-con = sqlite3.connect('data.db')
-cur = con.cursor()
+def parse_ref(ref: str) -> List[str]:
+    """parses references of the forms 'ref1:page1;ref2:page2' with pages being optional"""
+    if ref == '':
+        return []
+    return list(set([r.split(':')[0] for r in ref.split(';')]))
 
-clade = {}
+def main():
+    # create engine and session
+    if os.path.exists('data.db'):
+        os.remove('data.db')
+    engine = create_engine('sqlite:///data.db')
+    Session = sessionmaker(bind=engine)
+    session = Session()
 
-cur.execute('CREATE TABLE Languages (id TEXT, name TEXT, glottocode TEXT, long TEXT, lat TEXT, clade TEXT)')
-with open('cldf/languages.csv', 'r') as fin:
-    entries = csv.reader(fin)
-    for i, row in enumerate(entries):
-        if i == 0: continue
-        row = [normalize('NFC', x) for x in row]
-        clade[row[0]] = row[5]
-        cur.execute('INSERT INTO Languages VALUES (?, ?, ?, ?, ?, ?)', tuple(row))
+    # create all tables
+    Base.metadata.create_all(engine)
 
-cur.execute('CREATE TABLE Entries (number TEXT, headword TEXT, description TEXT)')
+    # languages
+    clades = {}
+    with open('../data/cldf/languages.csv', 'r') as f:
+        reader = csv.DictReader(f)
+        for row in tqdm(reader, total=reader.line_num):
+            language = Language(
+                id=row['ID'],
+                name=row['Name'],
+                glottocode=row['Glottocode'],
+                long=row['Longitude'],
+                lat=row['Latitude'],
+                clade=row['Clade'],
+                color=colors[row['Clade']],
+                order=order.index(row['Clade'])
+            )
+            clades[row['ID']] = row['Clade']
+            session.add(language)
 
-entry_name = {}
-with open('cldf/parameters.csv', 'r') as fin:
-    entries = csv.reader(fin)
-    for i, row in enumerate(entries):
-        if i == 0: continue
-        row = [normalize('NFC', x) for x in row]
-        entry_name[row[0]] = row[1]
-        cur.execute('INSERT INTO Entries (number, headword, description) VALUES (?, ?, ?)', (str(row[0]), str(row[1]), str(row[3])))
+    # parameters
+    params = {}
+    with open('../data/cldf/parameters.csv', 'r') as f:
+        reader = csv.DictReader(f)
+        for row in tqdm(reader, total=reader.line_num):
+            iden = 'src_' + row['ID']
+            parameter = Lemma(
+                id=iden,
+                word=row['Name'],
+                gloss=row['Description'],
+                language_id=row['Language_ID'],
+                notes=row['Etyma']
+            )
+            params[iden] = parameter
+            session.add(parameter)
 
-cur.execute('CREATE TABLE Reflexes (number TEXT, language TEXT, entry TEXT, form TEXT, gloss TEXT, native TEXT, phonemic TEXT, cognateset TEXT, notes TEXT, source TEXT, entryTitle TEXT)')
+    # lemmata
+    lemma_cts = defaultdict(int)
+    param_clades = defaultdict(set)
+    with open('../data/cldf/forms.csv', 'r') as f:
+        reader = csv.DictReader(f)
+        for row in tqdm(reader, total=reader.line_num):
+            row['Parameter_ID'] = 'src_' + row['Parameter_ID']
+            lemma = Lemma(
+                id=row['ID'],
+                word=row['Form'],
+                gloss=row['Gloss'],
+                native=row['Native'],
+                phonemic=row['Phonemic'],
+                original=row['Original'],
+                notes=row['Description'],
+                language_id=row['Language_ID'],
+                origin_lemma_id=row['Parameter_ID'],
+                relation="inheritance"
+            )
 
-lang_map = defaultdict(int)
-entry_map = defaultdict(int)
-entry_clade = defaultdict(set)
+            # language ct
+            lemma_cts[row['Language_ID']] += 1
 
-with open('cldf/forms.csv', 'r') as fin:
-    entries = csv.reader(fin)
-    for i, row in enumerate(entries):
-        if i == 0: continue
-        row = [normalize('NFC', x) for x in row]
+            # clade
+            param_clades[row['Parameter_ID']].add(clades[row['Language_ID']])
 
-        for entry in row[2].split(';'):
-            for entry in entry.split('+'):
-                lang_map[row[1]] += 1
-                entry_map[entry] += 1
-                
-                temp = row
-                row[2] = entry
+            # add refs
+            for ref in parse_ref(row['Source']):
+                reference = session.query(Reference).filter_by(id=ref).first()
+                if reference is None:
+                    reference = Reference(id=ref)
+                    session.add(reference)
+                lemma.references.append(reference)
 
-                data = tuple(temp + [entry_name[entry]])
+            session.add(lemma)
 
-                entry_clade[entry].add(clade[data[1]])
+    # update language lemma counts
+    for language_id, ct in lemma_cts.items():
+        language = session.query(Language).filter_by(id=language_id).first()
+        language.lemma_count = ct
+    
+    for param_id, clades in param_clades.items():
+        lemma = params[param_id]
+        lemma.clades = ','.join(list(clades))
 
-                # print(row, len(row))
-                cur.execute('INSERT INTO Reflexes VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', data)
+    session.commit()
 
-cur.execute('ALTER TABLE Languages ADD count TEXT')
-for lang in lang_map:
-    cur.execute('UPDATE Languages SET count=? WHERE id=?', (lang_map[lang], lang))
-
-cur.execute('ALTER TABLE Entries ADD count TEXT')
-for entry in entry_map:
-    cur.execute('UPDATE Entries SET count=? WHERE number=?', (entry_map[entry], entry))
-
-cur.execute('ALTER TABLE Entries ADD clades TEXT')
-for entry in entry_clade:
-    cur.execute('UPDATE Entries SET clades=? WHERE number=?', (','.join(entry_clade[entry]), entry))
-
-con.commit()
-con.close()
+if __name__ == "__main__":
+    main()

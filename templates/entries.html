@@ -1,18 +1,23 @@
 {% include "head.html" %}
 <h1 class="text-4xl font-semibold">Entries</h1>
 <div class="mt-8">
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <table>
+        <thead>
+            <tr class="grid-row">
+                <th>Language</th>
+                <th>Entry</th>
+            </tr>
+        </thead>
         {% for entry in entries %}
-        <a class="m-1" href="/entries/{{ entry[0] }}">
-        <div class="relative h-full w-full shadow rounded p-2 pl-3 border-l-4 hover:shadow-lg transition">
-            <div class="absolute top-0 right-0 text-sm">
-                {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if clade in entry[4] %}style="background-color: #{{ colors[clade] }};"{% endif %}></div>{% endfor %}
-            </div>
-            <p>{{ entry[1] }} <span class="font-thin">[{{ entry[0] }}]</span></p>
-        </div>
-        </a>
+        <tr class="grid-row" style="border-color: #{{ entry.language.color }};">
+            <td>{{ entry.language.name }}</td>
+            <td><a href="/entries/{{ entry.id }}">{{ entry.word }} <span class="font-thin">[{{ entry.id }}]</span></a></td>
+            <td class="clades">
+            {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}></div>{% endfor %}
+            </td>
+        </tr>
         {% endfor %}
-    </div>
+    </table>
     {% if page %}
     <div class="w-full flex mt-3">
         <div class="mx-auto flex flex-row">
