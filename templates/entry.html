@@ -18,6 +18,10 @@
     <div class="rounded shadow" style="width: 100%; height: 500px;" id="map">
     </div>
 </div>
+<div class="tooltip-toggle">
+    <input type="checkbox" id="show-tooltips" onchange="toggleTooltips()">
+    <label for="show-tooltips">Show all tooltips</label>
+</div>
 <table>
     <thead>
         <tr class="grid-row">
@@ -68,7 +72,23 @@ var icon = L.icon( {
             iconUrl: iconUrl,
             iconSize: [15, 15]
         } );
-L.marker([{{ reflexes[0].language.lat }}, {{ reflexes[0].language.long }}], {icon: icon}).bindTooltip("<strong>{{ reflexes[0].language.name }}</strong><br>{% for reflex in reflexes %}{% if loop.index != 1 %}, {% endif %}{{ reflex.word | safe }}{% endfor %}").openTooltip().addTo(map)
+L.marker([{{ reflexes[0].language.lat }}, {{ reflexes[0].language.long }}], {icon: icon}).bindTooltip("{% for reflex in reflexes %}{% if loop.index != 1 %}, {% endif %}{{ reflex.word | safe }}{% endfor %}").addTo(map)
 {% endfor %}
+function openAllTooltips() {
+    map.eachLayer(function(layer) {
+        if (layer instanceof L.Marker) {
+            layer.openTooltip();
+        }
+    });
+}
+
+function toggleTooltips() {
+    var checkbox = document.getElementById("show-tooltips");
+    if (checkbox.checked) {
+        openAllTooltips();
+    } else {
+        map.closeTooltip();
+    }
+}
 </script>
 {% include "foot.html" %}
