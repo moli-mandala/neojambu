@@ -18,18 +18,42 @@
     <div class="rounded shadow" style="width: 100%; height: 500px;" id="map">
     </div>
 </div>
-<div class="grid">
+<table>
+    <thead>
+        <tr class="grid-row">
+            <th><input type="text" class="search-box language-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
+            <th><input type="text" class="search-box entry-name-filter" placeholder="Entry" value="{{ request.args.get('entry_name', '') }}"></th>
+            <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
+            <th><input type="text" class="search-box notes-filter" placeholder="Notes" value="{{ request.args.get('notes', '') }}"></th>
+            <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
+        </tr>
+    </thead>
     {% for lang, reflexes in reflexes.items() %}
-    <div class="grid-row" style="border-color: #{{ reflexes[0].language.color }};">
-        <div><a href="/languages/{{ lang }}">{{ reflexes[0].language.name }}</a></div>
-        <div>
+    <tr class="grid-row" style="border-color: #{{ reflexes[0].language.color }};">
+        <td><a href="/languages/{{ lang }}">{{ reflexes[0].language.name }}</a></td>
+        <td>
             {% for reflex in reflexes %}
-            <p><a href="/reflexes/{{ reflex.id }}">{{ reflex.word }}</a>{% if reflex.gloss %} <span class="muted">‘&#8288;{{ reflex.gloss }}&#8288;’</span>{% endif %}{% if reflex.phonemic %} <span class="muted">/&#8288;{{ reflex.phonemic }}&#8288;/</span>{% endif %}</p>
+            <p><a href="/reflexes/{{ reflex.id }}">{{ reflex.word }}</a>{% if reflex.phonemic %} <span class="muted">/&#8288;{{ reflex.phonemic }}&#8288;/</span>{% endif %}</p>
             {% endfor %}
-        </div>
-    </div>
+        </td>
+        <td class="muted">
+            {% for reflex in reflexes %}
+            <p>{% if reflex.gloss %} {{ reflex.gloss | safe}}{% endif %}</p>
+            {% endfor %}
+        </td>
+        <td class="muted">
+            {% for reflex in reflexes %}
+            <p>{% if reflex.notes %}{{ reflex.notes | markdown | safe}}{% endif %}</p>
+            {% endfor %}
+        </td>
+        <td>
+            {% for reflex in reflexes %}
+            <p>{{ reflex.references | join(', ') | safe }}</p>
+            {% endfor %}
+        </td>
+    </tr>
     {% endfor %}
-</div>
+</table>
 <script>
 var map = L.map('map').setView([20.5937, 78.9629], 4);
 

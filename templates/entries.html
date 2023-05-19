@@ -1,17 +1,35 @@
 {% include "head.html" %}
 <h1 class="text-4xl font-semibold">Entries</h1>
+<p clas="muted">Showing {{ entries | length }} of {{ count }} entries.</p>
 <div class="mt-8">
     <table>
         <thead>
             <tr class="grid-row">
-                <th>Language</th>
-                <th>Entry</th>
+                <th>
+                    <select class="search-box lang-filter" name="lang">
+                        <option value="">Language</option>
+                        <option value="Ar" {% if request.args.get('lang') == 'Ar' %}selected{% endif %}>Arabic</option>
+                        <option value="PDr" {% if request.args.get('lang') == 'PDr' %}selected{% endif %}>Dravidian</option>
+                        <option value="Indo-Aryan" {% if request.args.get('lang') == 'Indo-Aryan' %}selected{% endif %}>Indo-Aryan</option>
+                        <option value="PNur" {% if request.args.get('lang') == 'PNur' %}selected{% endif %}>Nuristani</option>
+                        <option value="Pers" {% if request.args.get('lang') == 'Pers' %}selected{% endif %}>Persian</option>
+                    </select>
+                </th>
+                <th><input type="text" class="search-box entry-name-filter" placeholder="Entry" value="{{ request.args.get('entry_name', '') }}"></th>
+                <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
             </tr>
         </thead>
         {% for entry in entries %}
         <tr class="grid-row" style="border-color: #{{ entry.language.color }};">
             <td>{{ entry.language.name }}</td>
             <td><a href="/entries/{{ entry.id }}">{{ entry.word }} <span class="font-thin">[{{ entry.id }}]</span></a></td>
+            <td>
+                {% if entry.reference %}
+                {{ entry.references | join(', ') | safe}}
+                {% else %}
+                <span class="muted">&mdash;</span>
+                {% endif %}
+            </td>
             <td class="clades">
             {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}></div>{% endfor %}
             </td>
@@ -19,15 +37,15 @@
         {% endfor %}
     </table>
     {% if page %}
-    <div class="w-full flex mt-3">
-        <div class="mx-auto flex flex-row">
-            <div class="mx-2 p-2">
-                <a class="text-red-700 hover:text-red-900" href="/entries?page={{ page - 1 }}">←</a>
-            </div>
-            <div class="mx-2 rounded shadow p-2">{{ page }}</div>
-            <div class="mx-2 p-2">
-                <a class="text-red-700 hover:text-red-900" href="/entries?page={{ page + 1 }}">→</a>
-            </div>
+    <div style="width: 100%; text-align: center; margin: 2em 0em;">
+        <div style="margin-left: auto; margin-right: auto;">
+            <span>
+                <a class="page-nav" href="#" data-page="{{ page - 1 }}">←</a>
+            </span>
+            <span>{{ page }}</span>
+            <span>
+                <a class="page-nav" href="#" data-page="{{ page + 1 }}">→</a>
+            </span>
         </div>
     </div>
     {% endif %}

@@ -14,27 +14,51 @@
         </div>
         <div class="grid-row">
             <p>Entry</p>
+            {% if reflex.origin_lemma %}
             <p><a href="/entries/{{reflex.origin_lemma_id}}">{{ reflex.origin_lemma.word }} <span class="font-thin">[{{ reflex.origin_lemma_id }}]</span></a></p>
+            {% else %}
+            <p class="muted">&mdash;</p>
+            {% endif %}
         </div>
         <div class="grid-row">
             <p>Pronunciation</p>
-            <p>{% if reflex.phonemic %}/{{ reflex.phonemic }}/{% endif %}</p>
+            {% if reflex.phonemic %}
+            <p>/{{ reflex.phonemic }}/</p>
+            {% else %}
+            <p class="muted">&mdash;</p>
+            {% endif %}
         </div>
         <div class="grid-row">
             <p>Gloss</p>
+            {% if reflex.gloss %}
             <p>{{ reflex.gloss | safe }}</p>
+            {% else %}
+            <p class="muted">&mdash;</p>
+            {% endif %}
         </div>
         <div class="grid-row">
             <p>Native</p>
+            {% if reflex.native %}
             <p>{{ reflex.native }}</p>
+            {% else %}
+            <p class="muted">&mdash;</p>
+            {% endif %}
         </div>
         <div class="grid-row">
             <p>Notes</p>
-            {{ reflex.notes | markdown | safe }}
+            {% if reflex.notes %}
+            <p>{{ reflex.notes | markdown | safe }}</p>
+            {% else %}
+            <p class="muted">&mdash;</p>
+            {% endif %}
         </div>
         <div class="grid-row">
             <p>References</p>
-            <p>{{ reflex.references }}</p>
+            {% if reflex.references %}
+            <p>{{ reflex.references | join(', ') | safe }}</p>
+            {% else %}
+            <p class="muted">&mdash;</p>
+            {% endif %}
         </div>
     </div>
     <div style="width: 25%;"></div>

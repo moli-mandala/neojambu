@@ -35,10 +35,11 @@ class Reference(Base):
     __tablename__ = 'references'
 
     id = Column(String, primary_key=True)
+    short = Column(String)
     source = Column(String)
 
     def __repr__(self):
-        return f"<Reference(id='{self.id}', source='{self.source}')>"
+        return f"<a href=\"/references/{self.id}\">{self.short}</a>"
 
 class Lemma(Base):
     __tablename__ = 'lemmas'

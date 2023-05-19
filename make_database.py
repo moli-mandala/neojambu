@@ -2,6 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Language, Lemma, Reference, Concept, Base
 from typing import List
+import pybtex.database
+import pybtex.bibtex
 
 import os
 import csv
@@ -36,12 +38,12 @@ colors = {
     "Western Hindi": "FF6600",
     "Migratory": "63666A",
     "Nuristani": "9132a8",
-    "Brahui": "49796B",
     "Old Dravidian": "679267",
     "South Dravidian I": "74C365",
     "South Dravidian II": "98FB98",
     "Central Dravidian": "29AB87",
     "North Dravidian": "4B6F44",
+    "Brahui": "49796B",
     "Munda": "00ffd0",
     "Burushaski": "f3ff05",
     "Nihali": "ff9a00",
@@ -55,6 +57,19 @@ def parse_ref(ref: str) -> List[str]:
         return []
     return list(set([r.split(':')[0] for r in ref.split(';')]))
 
+def create_short_ref(entry):
+    year = entry.fields.get('year')
+    authors = entry.persons.get('author', [])
+    if year == 'n.d.':
+        year = '?'
+    if authors and year:
+        first_author = authors[0]
+        first_letter = first_author.last_names[0][0].upper() if first_author.last_names else first_author.first()[0].upper()
+        year = year.replace('--', '—')
+        return f"{first_letter}{year}"
+    else:
+        return '?'
+
 def main():
     # create engine and session
     if os.path.exists('data.db'):
@@ -65,6 +80,27 @@ def main():
 
     # create all tables
     Base.metadata.create_all(engine)
+
+    # format sources into html
+    sources = pybtex.database.parse_file('../data/cldf/sources.bib')
+    engine = pybtex.PybtexEngine()
+    used_short = set()
+    for source in sources.entries:
+        try:
+            formatted = engine.format_from_string(sources.entries[source].to_string('bibtex'), 'plain', output_backend='markdown')
+            formatted = formatted[3:].strip()
+        except:
+            formatted = ''
+        short = create_short_ref(sources.entries[source])
+        while short in used_short and short != '?':
+            if short[-1].isdigit() or short[-1] == '?':
+                short += 'a'
+            else:
+                short = short[:-1] + chr(ord(short[-1]) + 1)
+        used_short.add(short)
+        reference = Reference(id=source, short=short, source=formatted)
+        print(reference)
+        session.add(reference)
 
     # languages
     clades = {}
@@ -139,7 +175,8 @@ def main():
     # update language lemma counts
     for language_id, ct in lemma_cts.items():
         language = session.query(Language).filter_by(id=language_id).first()
-        language.lemma_count = ct
+        if language:
+            language.lemma_count = ct
     
     for param_id, clades in param_clades.items():
         lemma = params[param_id]

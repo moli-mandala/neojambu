@@ -1,6 +1,6 @@
 {% include "head.html" %}
 <h1>
-    <span>{{ lang1.name }}</span> <span class="font-thin">vs.</span> <span>{{ lang2.name }}</span> <span class="font-thin">({{both | length}} matches)</span>
+    <span>{{ lang1.name }}</span> <span class="font-thin">vs.</span> <span>{{ lang2.name }}</span> <span class="font-thin">({{count}} matches)</span>
 </h1>
 {% if lang1 %}
 <div class="lang-box">
@@ -25,7 +25,7 @@
         </div>
         <div class="grid-row">
             <p>Reflexes</p>
-            <p>{{ lang1.lemma_count }}</p>
+            <p>{{ lang1.lemma_count }} <span class="muted">({{ '%.2f' % ((count / lang1.lemma_count) * 100) }}%)</span></p>
         </div>
     </div>
 </div>
@@ -46,7 +46,7 @@
         </div>
         <div class="grid-row">
             <p>Reflexes</p>
-            <p>{{ lang2.lemma_count }}</p>
+            <p>{{ lang2.lemma_count }} <span class="muted">({{ '%.2f' % ((count / lang2.lemma_count) * 100) }}%)</span></p>
         </div>
     </div>
 </div>

@@ -25,15 +25,37 @@ def hello_world():
 @app.route("/reflexes")
 @app.route("/reflexes/<reflex>")
 def reflexes(reflex=None):
-    con = sqlite3.connect('data.db')
-    cur = con.cursor()
+
+    lang_filter = request.args.get('lang', None)
+    word_filter = request.args.get('word', None)
+    gloss_filter = request.args.get('gloss', None)
+    source_filter = request.args.get('source', None)
+    origin_filter = request.args.get('origin', None)
+
     if reflex:
         lemma = session.query(Lemma).filter_by(id=reflex).first()
         return render_template('reflex.html', reflex=lemma)
     else:
         page = int(request.args.get('page', 1))
-        lemmas = session.query(Lemma).limit(200).offset(page * 200 - 200).all()
-        return render_template('reflexes.html', reflexes=lemmas, page=page)
+        lemmas = session.query(Lemma)
+
+        if lang_filter:
+            lemmas = lemmas.join(Language).filter(Language.name.like('%' + lang_filter + '%'))
+        if word_filter:
+            lemmas = lemmas.filter(Lemma.word.like('%' + word_filter + '%'))
+        if gloss_filter:
+            lemmas = lemmas.filter(Lemma.gloss.like('%' + gloss_filter + '%'))
+        if source_filter:
+            lemmas = lemmas.join(Lemma.references).filter(Reference.short.like('%' + source_filter + '%'))
+        if origin_filter:
+            lemmas = lemmas.join(Lemma.origin_lemma, aliased=True).filter(Lemma.word.like('%' + origin_filter + '%'))
+            
+        return render_template(
+            'reflexes.html',
+            reflexes=lemmas.limit(50).offset(page * 50 - 50).all(),
+            page=page,
+            count=lemmas.count(),
+        )
 
 @app.route("/languages")
 @app.route("/languages/<lang1>")
@@ -64,30 +86,60 @@ def languages(lang1=None, lang2=None):
         lang1 = session.query(Language).filter_by(id=lang1).first()
         lang2 = session.query(Language).filter_by(id=lang2).first()
 
-        return render_template('compare.html', colors=colors, both=both, lang1=lang1, lang2=lang2, lang_dict=lang1_dict, lang2_dict=lang2_dict)
+        return render_template('compare.html', colors=colors, both=both, count=len(both), lang1=lang1, lang2=lang2, lang_dict=lang1_dict, lang2_dict=lang2_dict)
 
     elif lang1:
         page = int(request.args.get('page', 1))
+
         language = session.query(Language).filter_by(id=lang1).first()
-        lemmas = session.query(Lemma).filter_by(language_id=lang1).options(joinedload(Lemma.origin_lemma)).limit(50).all()
-        return render_template('reflexes.html', lang=language, colors=colors, reflexes=lemmas, page=page)
+        lemmas = session.query(Lemma).filter_by(language_id=lang1).options(joinedload(Lemma.origin_lemma))
+
+        return render_template('reflexes.html', lang=language, colors=colors, count=lemmas.count(), reflexes=lemmas.limit(50).offset(page * 50 - 50).all(), page=page)
+    
     else:
-        langs = session.query(Language).order_by(Language.order).all()
-        return render_template('langs.html', langs=langs, colors=colors)
+        lang_filter = request.args.get('lang', None)
+        clade_filter = request.args.get('clade', None)
+        langs = session.query(Language).order_by(Language.order)
+        if lang_filter:
+            langs = langs.filter(Language.name.like('%' + lang_filter + '%'))
+        if clade_filter:
+            langs = langs.filter(Language.clade.like('%' + clade_filter + '%'))
+        return render_template('langs.html', langs=langs.all(), count=langs.count(), colors=colors)
 
 @app.route("/entries")
 @app.route('/entries/<entry>')
 def entries(entry=None, lang=None):
     page = int(request.args.get('page', 1))
     search = request.args.get('entry', None)
+    lang_filter = request.args.get('lang', None)
+    entry_filter = request.args.get('entry_name', None)
+    source_filter = request.args.get('source', None)
+    gloss_filter = request.args.get('gloss', None)
     if entry:
         entry_info = session.query(Lemma).filter_by(id=entry).first()
-        reflexes = session.query(Lemma).filter_by(origin_lemma_id=entry).join(Language).order_by(Language.order).all()
+        reflexes_query = session.query(Lemma).filter_by(origin_lemma_id=entry)
+        if lang_filter:
+            reflexes_query = reflexes_query.filter_by(language_id=lang_filter)
+        if entry_filter:
+            reflexes_query = reflexes_query.filter(Lemma.word.like('%' + entry_filter + '%'))
+        if gloss_filter:
+            reflexes_query = reflexes_query.filter(Lemma.gloss.like('%' + gloss_filter + '%'))
+        reflexes = reflexes_query.join(Language).order_by(Language.order).all()
         grouped_reflexes = {key: list(group) for key, group in groupby(reflexes, key=lambda lemma: lemma.language_id)}
         return render_template('entry.html', entry=entry_info, reflexes=grouped_reflexes, colors=colors, order=order)
     else:
-        entries = session.query(Lemma).filter(Lemma.origin_lemma_id == None).limit(50).all()
-        return render_template('entries.html', entries=entries, page=page, colors=colors, order=order)
+        entries_query = session.query(Lemma).filter(Lemma.origin_lemma_id == None)
+        if lang_filter:
+            entries_query = entries_query.filter_by(language_id=lang_filter)
+        if entry_filter:
+            entries_query = entries_query.filter(Lemma.word.like('%' + entry_filter + '%'))
+        entries = entries_query
+        return render_template('entries.html', entries=entries.limit(50).offset(page * 50 - 50).all(), count=entries.count(), page=page, colors=colors, order=order)
+
+@app.route("/references")
+def references():
+    refs = session.query(Reference).all()
+    return render_template('references.html', sources=refs)
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support

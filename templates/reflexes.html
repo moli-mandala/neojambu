@@ -32,36 +32,57 @@
     </div>
 </div>
 {% endif %}
+<p clas="muted">Showing {{ reflexes | length }} of {{ count }} reflexes.</p>
 <div class="mt-5">
     <table>
+        <thead>
+            <tr class="grid-row">
+                <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
+                <th><input type="text" class="search-box word-filter" placeholder="Word" value="{{ request.args.get('word', '') }}"></th>
+                <th><input type="text" class="search-box origin-filter" placeholder="Origin" value="{{ request.args.get('origin', '') }}"></th>
+                <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
+                <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
+            </tr>
+        </thead>
         {% for word in reflexes %}
         <tr class="grid-row" style="border-color: #{{ word.language.color }};">
             <td>{{ word.language.name }}</td>
             <td>
-                <p><a href="/reflexes/{{ word.id }}">{{ word.word }}</a>{% if word.phonemic %} <span class="muted">/&#8288;{{ word.phonemic }}&#8288;/</span>{% endif %}{% if word.gloss %} <span class="muted">‘&#8288;{{ word.gloss | striptags }}&#8288;’</span>{% endif %}</p>
+                <p><a href="/reflexes/{{ word.id }}">{{ word.word }}</a>{% if word.phonemic %} <span class="muted">/&#8288;{{ word.phonemic }}&#8288;/</span>{% endif %}</p>
             </td>
             <td>
                 {% if word.origin_lemma %}
                 <p><a href="/entries/{{ word.origin_lemma.id }}">{{ word.origin_lemma.word }} <span class="font-thin">[{{ word.origin_lemma.language.name }}]</span></a></p>
+                {% else %}
+                <p class="muted">&mdash;</p>
                 {% endif %}
             </td>
             <td>
-                <p></p>
+                {% if word.gloss %}
+                <p><span class="muted">{{ word.gloss | safe}}</span></p>
+                {% endif %}
+            </td>
+            <td>
+                {% if word.references %}
+                <p>{{ word.references | join(', ') | safe }}</p>
+                {% else %}
+                <p class="muted">&mdash;</p>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
     </table>
 </div>
 {% if page %}
-<div class="w-full flex mt-3">
-    <div class="mx-auto flex flex-row">
-        <div class="mx-2 p-2">
-            <a href="{{ request.path }}?page={{ page - 1 }}">←</a>
-        </div>
-        <div class="mx-2 rounded shadow p-2">{{ page }}</div>
-        <div class="mx-2 p-2">
-            <a href="{{ request.path }}?page={{ page + 1 }}">→</a>
-        </div>
+<div style="width: 100%; text-align: center; margin: 2em 0em;">
+    <div style="margin-left: auto; margin-right: auto;">
+        <span>
+            <a class="page-nav" href="#" data-page="{{ page - 1 }}">←</a>
+        </span>
+        <span>{{ page }}</span>
+        <span>
+            <a class="page-nav" href="#" data-page="{{ page + 1 }}">→</a>
+        </span>
     </div>
 </div>
 {% endif %}

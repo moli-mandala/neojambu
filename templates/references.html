@@ -1,0 +1,16 @@
+{% include "head.html" %}
+<div>
+    <table>
+        {% for source in sources %}
+        <tr class="grid-row">
+            <td>{{ source.short }} <span class="font-thin">[{{ source.id }}]</span></td>
+            <td style="flex: 3 3 0px;">
+            {% if source.source %}
+            {{ source.source | markdown | safe}}
+            {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% include "foot.html" %}
