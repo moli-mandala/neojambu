@@ -51,20 +51,20 @@ var icon = L.icon( {
         } );
 L.marker([{{ lang.lat }}, {{ lang.long }}], {icon: icon}).bindTooltip("{{ lang.name }} <span class=\"font-thin\">({{ lang.lemma_count }})</span>").addTo(map)
 {% endfor %}
-function openAllTooltips() {
-    map.eachLayer(function(layer) {
-        if (layer instanceof L.Marker) {
-            layer.openTooltip();
-        }
-    });
-}
-
 function toggleTooltips() {
     var checkbox = document.getElementById("show-tooltips");
     if (checkbox.checked) {
-        openAllTooltips();
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) {
+                layer.openTooltip();
+            }
+        });
     } else {
-        map.closeTooltip();
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) {
+                layer.closeTooltip();
+            }
+        });
     }
 }
 </script>

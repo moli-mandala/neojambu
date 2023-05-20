@@ -8,30 +8,43 @@
                 <th>
                     <select class="search-box lang-filter" name="lang">
                         <option value="">Language</option>
-                        <option value="Ar" {% if request.args.get('lang') == 'Ar' %}selected{% endif %}>Arabic</option>
-                        <option value="PDr" {% if request.args.get('lang') == 'PDr' %}selected{% endif %}>Dravidian</option>
+                        <option value="Proto-Dravidian" {% if request.args.get('lang') == 'Proto-Dravidian' %}selected{% endif %}>Dravidian</option>
                         <option value="Indo-Aryan" {% if request.args.get('lang') == 'Indo-Aryan' %}selected{% endif %}>Indo-Aryan</option>
-                        <option value="PNur" {% if request.args.get('lang') == 'PNur' %}selected{% endif %}>Nuristani</option>
-                        <option value="Pers" {% if request.args.get('lang') == 'Pers' %}selected{% endif %}>Persian</option>
+                        <option value="Proto-Munda" {% if request.args.get('lang') == 'Proto-Munda' %}selected{% endif %}>Munda</option>
+                        <option value="Proto-Nuristani" {% if request.args.get('lang') == 'Proto-Nuristani' %}selected{% endif %}>Nuristani</option>
+                        <option class="divider" disabled>&mdash;</option>
+                        <option value="Arabic" {% if request.args.get('lang') == 'Arabic' %}selected{% endif %}>Arabic</option>
+                        <option value="English" {% if request.args.get('lang') == 'English' %}selected{% endif %}>English</option>
+                        <option value="Persian" {% if request.args.get('lang') == 'Persian' %}selected{% endif %}>Persian</option>
                     </select>
                 </th>
                 <th><input type="text" class="search-box entry-name-filter" placeholder="Entry" value="{{ request.args.get('entry_name', '') }}"></th>
+                <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
                 <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
             </tr>
         </thead>
         {% for entry in entries %}
         <tr class="grid-row" style="border-color: #{{ entry.language.color }};">
-            <td>{{ entry.language.name }}</td>
-            <td><a href="/entries/{{ entry.id }}">{{ entry.word }} <span class="font-thin">[{{ entry.id }}]</span></a></td>
             <td>
+                <p>{{ entry.language.name }}</p>
+                <div>
+                    {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}></div>{% endfor %}
+                </div>
+            </td>
+            <td><a href="/entries/{{ entry.id }}">{{ entry.word }} <span class="font-thin">[{{ entry.id }}]</span></a></td>
+            <td class="muted">
+                {% if entry.gloss %}
+                {{ entry.gloss | safe}}
+                {% else %}
+                <span>&mdash;</span>
+                {% endif %}
+            </td>
+            <td class="muted">
                 {% if entry.reference %}
                 {{ entry.references | join(', ') | safe}}
                 {% else %}
-                <span class="muted">&mdash;</span>
+                <span>&mdash;</span>
                 {% endif %}
-            </td>
-            <td class="clades">
-            {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}></div>{% endfor %}
             </td>
         </tr>
         {% endfor %}

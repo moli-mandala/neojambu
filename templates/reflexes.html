@@ -41,6 +41,7 @@
                 <th><input type="text" class="search-box word-filter" placeholder="Word" value="{{ request.args.get('word', '') }}"></th>
                 <th><input type="text" class="search-box origin-filter" placeholder="Origin" value="{{ request.args.get('origin', '') }}"></th>
                 <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
+                <th><input type="text" class="search-box notes-filter" placeholder="Notes" value="{{ request.args.get('notes', '') }}"></th>
                 <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
             </tr>
         </thead>
@@ -60,6 +61,11 @@
             <td>
                 {% if word.gloss %}
                 <p><span class="muted">{{ word.gloss | safe}}</span></p>
+                {% endif %}
+            </td>
+            <td class="muted">
+                {% if word.notes %}
+                <p>{{ word.notes | markdown | safe}}</p>
                 {% endif %}
             </td>
             <td>

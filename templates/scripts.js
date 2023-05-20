@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const classes = ['lang', 'entry-name', 'source', 'gloss', 'word', 'origin', 'clade'];
+    const classes = ['lang', 'entry-name', 'source', 'gloss', 'word', 'origin', 'clade', 'notes'];
 
     const filterEntries = (obj) => {
-        const url = new URL('{{ request.url }}', window.location.href);
+        const url = new URL(`{{ request.url }}`, window.location.href);
         for (key in obj) {
             url.searchParams.set(key, obj[key]);
         }
@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i = 0; i < classes.length; i++) {
         const classList = document.querySelectorAll(`.${classes[i]}-filter`);
         classList.forEach(filter => {
+            let orig_value = filter.value;
             filter.addEventListener('keydown', event => {
                 if (event.keyCode === 13) {
                     className = classes[i].replace('-', '_');
@@ -23,6 +24,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     obj[`${className}`] = event.target.value;
                     filterEntries(obj);
                 }
+            });
+            filter.addEventListener('focus', event => {
+                orig_value = event.target.value;
+            });
+            filter.addEventListener('blur', event => {
+                if (event.target.value !== orig_value) {
+                    className = classes[i].replace('-', '_');
+                    obj = {};
+                    obj[`${className}`] = event.target.value;
+                    filterEntries(obj);
+                }
+                orig_value = event.target.value;
             });
         });
     }

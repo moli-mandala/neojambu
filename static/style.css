@@ -143,6 +143,8 @@ smallcaps {
     right: 0;
     font-size: 0.875rem;
     line-height: 1.25rem;
+    margin: 0;
+    padding: 0;
 }
 
 .lang-box {
@@ -208,4 +210,9 @@ table input, table select {
 
 .tooltip p {
     margin: 0;
+}
+
+.divider {
+    color: #999999;
+    font-style: italic;
 }

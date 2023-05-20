@@ -25,7 +25,7 @@
 <table>
     <thead>
         <tr class="grid-row">
-            <th><input type="text" class="search-box language-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
+            <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
             <th><input type="text" class="search-box entry-name-filter" placeholder="Entry" value="{{ request.args.get('entry_name', '') }}"></th>
             <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
             <th><input type="text" class="search-box notes-filter" placeholder="Notes" value="{{ request.args.get('notes', '') }}"></th>
@@ -74,20 +74,20 @@ var icon = L.icon( {
         } );
 L.marker([{{ reflexes[0].language.lat }}, {{ reflexes[0].language.long }}], {icon: icon}).bindTooltip("{% for reflex in reflexes %}{% if loop.index != 1 %}, {% endif %}{{ reflex.word | safe }}{% endfor %}").addTo(map)
 {% endfor %}
-function openAllTooltips() {
-    map.eachLayer(function(layer) {
-        if (layer instanceof L.Marker) {
-            layer.openTooltip();
-        }
-    });
-}
-
 function toggleTooltips() {
     var checkbox = document.getElementById("show-tooltips");
     if (checkbox.checked) {
-        openAllTooltips();
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) {
+                layer.openTooltip();
+            }
+        });
     } else {
-        map.closeTooltip();
+        map.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) {
+                layer.closeTooltip();
+            }
+        });
     }
 }
 </script>

@@ -47,7 +47,7 @@
         <div class="grid-row">
             <p>Notes</p>
             {% if reflex.notes %}
-            <p>{{ reflex.notes | markdown | safe }}</p>
+            <div>{{ reflex.notes | markdown | safe }}</div>
             {% else %}
             <p class="muted">&mdash;</p>
             {% endif %}

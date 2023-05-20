@@ -34,7 +34,8 @@ def reflexes(reflex=None):
         lemma = session.query(Lemma).filter_by(id=reflex).first()
         return render_template("reflex.html", reflex=lemma)
     else:
-        lemmas = filter_data(session.query(Lemma), request)
+        lemmas = filter_data(session.query(Lemma).join(Language), request, Lemma)
+        lemmas = lemmas.order_by(Lemma.origin_lemma_id, Language.clade, Language.name)
         return render_template(
             "reflexes.html",
             reflexes=lemmas.limit(50).offset(page * 50 - 50).all(),
@@ -102,6 +103,7 @@ def languages(lang1=None, lang2=None):
             .filter_by(language_id=lang1)
             .options(joinedload(Lemma.origin_lemma))
         )
+        lemmas = filter_data(lemmas.join(Language), request, Lemma)
 
         return render_template(
             "reflexes.html",
@@ -114,7 +116,7 @@ def languages(lang1=None, lang2=None):
 
     else:
         langs = session.query(Language).order_by(Language.order)
-        langs = filter_data(langs, request)
+        langs = filter_data(langs, request, Language)
         return render_template(
             "langs.html", langs=langs.all(), count=langs.count(), colors=colors
         )
@@ -127,9 +129,9 @@ def entries(entry=None, lang=None):
     if entry:
         entry_info = session.query(Lemma).filter_by(id=entry).first()
         reflexes_query = filter_data(
-            session.query(Lemma).filter_by(origin_lemma_id=entry), request
+            session.query(Lemma).filter_by(origin_lemma_id=entry).join(Language), request, Lemma
         )
-        reflexes = reflexes_query.join(Language).order_by(Language.order).all()
+        reflexes = reflexes_query.order_by(Language.order, Language.name).all()
         grouped_reflexes = {
             key: list(group)
             for key, group in groupby(reflexes, key=lambda lemma: lemma.language_id)
@@ -143,7 +145,7 @@ def entries(entry=None, lang=None):
         )
     else:
         entries_query = session.query(Lemma).filter(Lemma.origin_lemma_id == None)
-        entries = filter_data(entries_query, request)
+        entries = filter_data(entries_query.join(Language), request, Lemma)
         return render_template(
             "entries.html",
             entries=entries.limit(50).offset(page * 50 - 50).all(),
