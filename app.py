@@ -163,4 +163,4 @@ def references():
 
 
 if __name__ == "__main__":
-    app.run(threaded=True, port=2222, debug=True)
+    app.run(threaded=True, port=2222)
