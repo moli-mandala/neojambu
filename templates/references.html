@@ -1,9 +1,10 @@
 {% include "head.html" %}
+<h1>References</h1>
 <div>
     <table>
         {% for source in sources %}
         <tr class="grid-row">
-            <td>{{ source.short }} <span class="font-thin">[{{ source.id }}]</span></td>
+            <td><a href="/references/{{ source.id }}">{{ source.short }}</a> <span class="font-thin">[{{ source.id }}]</span></td>
             <td style="flex: 3 3 0px;">
             {% if source.source %}
             {{ source.source | markdown | safe}}

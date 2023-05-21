@@ -157,9 +157,14 @@ def entries(entry=None, lang=None):
 
 
 @app.route("/references")
-def references():
-    refs = session.query(Reference).all()
-    return render_template("references.html", sources=refs)
+@app.route("/references/<ref>")
+def references(ref=None):
+    if ref:
+        ref = session.query(Reference).filter_by(id=ref).first()
+        return render_template("reference.html", source=ref)
+    else:
+        refs = session.query(Reference).all()
+        return render_template("references.html", sources=refs)
 
 
 if __name__ == "__main__":

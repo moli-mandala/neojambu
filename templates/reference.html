@@ -1,0 +1,4 @@
+{% include "head.html" %}
+<h1>{{ source.short }} <span class="font-thin">[{{ source.id }}]</span></h1>
+<p>{{ source.source | markdown | safe}}</p>
+{% include "foot.html" %}
