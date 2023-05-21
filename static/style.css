@@ -92,6 +92,41 @@ smallcaps {
     margin-top: 1.25rem;
 }
 
+.grid-group {
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    border-width: 0;
+    border-left-width: 4px;
+    border-left-style: solid;
+    border-left-color: rgba(0, 0, 0, 0);
+    display: grid;
+    padding: 0.25rem;
+}
+
+.grid-group-row {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0rem;
+    margin-bottom: 0rem;
+    border-width: 0;
+    display: flex;
+    position: relative;
+    width: 100%;
+}
+
+.grid-group-row > * {
+    padding: 0rem 0.25rem;
+    flex: 1 1 0px;
+}
+
+.grid-group-row p {
+    margin: 0;
+}
+
 .grid-row {
     border-radius: 0.25rem;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);

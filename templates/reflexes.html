@@ -53,7 +53,7 @@
             </td>
             <td>
                 {% if word.origin_lemma %}
-                <p><a href="/entries/{{ word.origin_lemma.id }}">{{ word.origin_lemma.word }} <span class="font-thin">[{{ word.origin_lemma.language.name }}]</span></a></p>
+                <p><a href="/entries/{{ word.origin_lemma.id }}">{{ word.origin_lemma.word }} <small class="font-thin">[{{ word.origin_lemma.language.name }}]</small></a></p>
                 {% else %}
                 <p class="muted">&mdash;</p>
                 {% endif %}

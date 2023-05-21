@@ -33,29 +33,31 @@
         </tr>
     </thead>
     {% for lang, reflexes in reflexes.items() %}
-    <tr class="grid-row" style="border-color: #{{ reflexes[0].language.color }};">
-        <td><a href="/languages/{{ lang }}">{{ reflexes[0].language.name }}</a></td>
+    <tbody class="grid-group" style="border-color: #{{ reflexes[0].language.color }};">
+    {% for reflex in reflexes %}
+    <tr class="grid-group-row">
+        {% if loop.first %}
         <td>
-            {% for reflex in reflexes %}
+            <p><a href="/languages/{{ lang }}">{{ reflex.language.name }}</a></p>
+        </td>
+        {% else %}
+        <td></td>
+        {% endif %}
+        <td>
             <p><a href="/reflexes/{{ reflex.id }}">{{ reflex.word }}</a>{% if reflex.phonemic %} <span class="muted">/&#8288;{{ reflex.phonemic }}&#8288;/</span>{% endif %}</p>
-            {% endfor %}
         </td>
         <td class="muted">
-            {% for reflex in reflexes %}
             <p>{% if reflex.gloss %} {{ reflex.gloss | safe}}{% endif %}</p>
-            {% endfor %}
         </td>
         <td class="muted">
-            {% for reflex in reflexes %}
             <p>{% if reflex.notes %}{{ reflex.notes | markdown | safe}}{% endif %}</p>
-            {% endfor %}
         </td>
         <td>
-            {% for reflex in reflexes %}
             <p>{{ reflex.references | join(', ') | safe }}</p>
-            {% endfor %}
         </td>
     </tr>
+    {% endfor %}
+    </tbody>
     {% endfor %}
 </table>
 <script>

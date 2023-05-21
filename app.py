@@ -99,7 +99,7 @@ def languages(lang1=None, lang2=None):
                 lang2=lang2,
                 lang_dict=lang1_dict,
                 lang2_dict=lang2_dict,
-                name=f"Languages {lang1.name} vs {lang2.name}",
+                title=f"Languages {lang1.name} vs {lang2.name}",
             )
         else:
             return "Language not found"
@@ -115,15 +115,16 @@ def languages(lang1=None, lang2=None):
                 .options(joinedload(Lemma.origin_lemma))
             )
             lemmas = filter_data(lemmas.join(Language), request, Lemma)
+            lemmas = lemmas.order_by(Lemma.origin_lemma_id).limit(50).offset(page * 50 - 50)
 
             return render_template(
                 "reflexes.html",
                 lang=language,
                 colors=colors,
                 count=lemmas.count(),
-                reflexes=lemmas.limit(50).offset(page * 50 - 50).all(),
+                reflexes=lemmas.all(),
                 page=page,
-                name=f"Language {language.name}",
+                title=f"Language {language.name}",
             )
         else:
             return "Language not found"
@@ -136,7 +137,7 @@ def languages(lang1=None, lang2=None):
             langs=langs.all(),
             count=langs.count(),
             colors=colors,
-            name="Languages",
+            title="Languages",
         )
 
 
@@ -163,7 +164,7 @@ def entries(entry=None, lang=None):
                 reflexes=grouped_reflexes,
                 colors=colors,
                 order=order,
-                name=f"Entry {entry_info.word}",
+                title=f"Entry {entry_info.word}",
             )
         else:
             return "Entry not found"
@@ -177,7 +178,7 @@ def entries(entry=None, lang=None):
             page=page,
             colors=colors,
             order=order,
-            name="Entries",
+            title="Entries",
         )
 
 
