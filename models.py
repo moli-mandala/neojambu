@@ -57,6 +57,7 @@ class Lemma(Base):
     original = Column(String)
     notes = Column(String)
     clades = Column(String)
+    cognateset = Column(String)
 
     language_id = Column(String, ForeignKey("languages.id"))
     origin_lemma_id = Column(

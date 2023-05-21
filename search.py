@@ -15,6 +15,9 @@ filters = {
     "source": lambda x, y, z: x.join(Lemma.references).filter(
         Reference.short.like("%" + y + "%")
     ),
+    "origin_lang": lambda x, y, z: x.join(Lemma.origin_lemma, aliased=True).filter(
+        Lemma.language_id == y
+    ),
     "origin": lambda x, y, z: x.join(Lemma.origin_lemma, aliased=True).filter(
         Lemma.word.like("%" + y + "%")
     ),

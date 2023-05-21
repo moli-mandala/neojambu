@@ -92,7 +92,8 @@ def main():
     sources = pybtex.database.parse_file("../data/cldf/sources.bib")
     engine = pybtex.PybtexEngine()
     used_short = set()
-    for source in sources.entries:
+    refs = {}
+    for source in tqdm(sources.entries):
         try:
             formatted = engine.format_from_string(
                 sources.entries[source].to_string("bibtex"),
@@ -118,14 +119,16 @@ def main():
             source=formatted,
             progress=sources.entries[source].fields.get("included", "No"),
         )
-        print(reference)
+        refs[source] = reference
         session.add(reference)
 
     # languages
     clades = {}
+    langs = {}
     with open("../data/cldf/languages.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row in tqdm(reader, total=reader.line_num):
+        lines = f.readlines()
+        reader = csv.DictReader(lines)
+        for row in tqdm(reader, total=len(lines)):
             language = Language(
                 id=row["ID"],
                 name=row["Name"],
@@ -137,13 +140,15 @@ def main():
                 order=order.index(row["Clade"]),
             )
             clades[row["ID"]] = row["Clade"]
+            langs[row["ID"]] = language
             session.add(language)
 
     # parameters
     params = {}
     with open("../data/cldf/parameters.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row in tqdm(reader, total=reader.line_num):
+        lines = f.readlines()
+        reader = csv.DictReader(lines)
+        for row in tqdm(reader, total=len(lines)):
             iden = "src_" + row["ID"]
             parameter = Lemma(
                 id=iden,
@@ -159,8 +164,9 @@ def main():
     lemma_cts = defaultdict(int)
     param_clades = defaultdict(set)
     with open("../data/cldf/forms.csv", "r") as f:
-        reader = csv.DictReader(f)
-        for row in tqdm(reader, total=reader.line_num):
+        lines = f.readlines()
+        reader = csv.DictReader(lines)
+        for row in tqdm(reader, total=len(lines)):
             row["Parameter_ID"] = "src_" + row["Parameter_ID"]
             lemma = Lemma(
                 id=row["ID"],
@@ -172,7 +178,8 @@ def main():
                 notes=row["Description"],
                 language_id=row["Language_ID"],
                 origin_lemma_id=row["Parameter_ID"],
-                relation="inheritance",
+                cognateset=row["Cognateset"] if row["Cognateset"] != row["Parameter_ID"] else None,
+                relation="i",
             )
 
             # language ct
@@ -183,7 +190,7 @@ def main():
 
             # add refs
             for ref in parse_ref(row["Source"]):
-                reference = session.query(Reference).filter_by(id=ref).first()
+                reference = refs.get(ref, None)
                 if reference is None:
                     reference = Reference(id=ref)
                     session.add(reference)
@@ -192,12 +199,12 @@ def main():
             session.add(lemma)
 
     # update language lemma counts
-    for language_id, ct in lemma_cts.items():
-        language = session.query(Language).filter_by(id=language_id).first()
+    for language_id, ct in tqdm(lemma_cts.items()):
+        language = langs[language_id]
         if language:
             language.lemma_count = ct
 
-    for param_id, clades in param_clades.items():
+    for param_id, clades in tqdm(param_clades.items()):
         lemma = params[param_id]
         lemma.clades = ",".join(list(clades))
 

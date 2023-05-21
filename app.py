@@ -8,6 +8,7 @@ from make_database import colors
 from markdown import markdown
 from jinja2 import Environment
 from itertools import groupby
+from pprint import pprint
 
 from search import filter_data
 
@@ -115,20 +116,22 @@ def languages(lang1=None, lang2=None):
                 .options(joinedload(Lemma.origin_lemma))
             )
             lemmas = filter_data(lemmas.join(Language), request, Lemma)
-            lemmas = lemmas.order_by(Lemma.origin_lemma_id).limit(50).offset(page * 50 - 50)
 
             return render_template(
                 "reflexes.html",
                 lang=language,
                 colors=colors,
                 count=lemmas.count(),
-                reflexes=lemmas.all(),
+                reflexes=lemmas.order_by(Lemma.origin_lemma_id).limit(50).offset(page * 50 - 50).all(),
                 page=page,
                 title=f"Language {language.name}",
             )
         else:
             return "Language not found"
 
+    elif lang2:
+        return "Wut did you do"
+    
     else:
         langs = session.query(Language).order_by(Language.order, Language.name)
         langs = filter_data(langs, request, Language)
@@ -153,15 +156,33 @@ def entries(entry=None, lang=None):
                 request,
                 Lemma,
             )
-            reflexes = reflexes_query.order_by(Language.order, Language.name).all()
-            grouped_reflexes = {
+
+            # group reflexes by cognate set first (i.e. subgroup)
+            reflexes_cognatesets = reflexes_query.order_by(Lemma.cognateset, Language.order, Language.name).all()
+            grouped_cognatesets = {
                 key: list(group)
-                for key, group in groupby(reflexes, key=lambda lemma: lemma.language_id)
+                for key, group in groupby(reflexes_cognatesets, key=lambda lemma: lemma.cognateset)
             }
+
+            # subgroup each cognateset by language
+            for cognateset in grouped_cognatesets:
+                grouped_cognatesets[cognateset] = {
+                    key: list(group)
+                    for key, group in groupby(grouped_cognatesets[cognateset], key=lambda lemma: lemma.language)
+                }
+
+            # by langs separately (for dots on map)
+            reflexes_langs = reflexes_query.order_by(Language.order, Language.name).all()
+            grouped_langs = {
+                key: list(group)
+                for key, group in groupby(reflexes_langs, key=lambda lemma: lemma.language)
+            }
+
             return render_template(
                 "entry.html",
                 entry=entry_info,
-                reflexes=grouped_reflexes,
+                reflexes=grouped_cognatesets,
+                grouped_langs=grouped_langs,
                 colors=colors,
                 order=order,
                 title=f"Entry {entry_info.word}",

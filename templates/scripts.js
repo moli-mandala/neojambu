@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const classes = ['lang', 'entry-name', 'source', 'gloss', 'word', 'origin', 'clade', 'notes'];
+    const classes = ['lang', 'origin-lang', 'entry-name', 'source', 'gloss', 'word', 'origin', 'clade', 'notes'];
 
     const filterEntries = (obj) => {
         const url = new URL(`{{ request.url }}`, window.location.href);
@@ -38,14 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 orig_value = event.target.value;
             });
         });
-    }
 
-    const languageFilters2 = document.querySelectorAll('select.lang-filter');
-    languageFilters2.forEach(filter => {
-        filter.addEventListener('change', event => {
-            filterEntries({ lang: event.target.value });
+        const filter2 = document.querySelectorAll(`select.${classes[i]}-filter`);
+        filter2.forEach(filter => {
+            filter.addEventListener('change', event => {
+                className = classes[i].replace('-', '_');
+                obj = {};
+                obj[`${className}`] = event.target.value;
+                filterEntries(obj);
+            });
         });
-    });
+    }
 
     // page navigation
     const pageNav = document.querySelectorAll('.page-nav');

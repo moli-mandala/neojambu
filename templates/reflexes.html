@@ -37,7 +37,23 @@
     <table>
         <thead>
             <tr class="grid-row">
+                {% if lang %}
+                <th>
+                    <select class="search-box origin-lang-filter" name="origin-lang">
+                        <option value="">Language</option>
+                        <option value="PDr" {% if request.args.get('origin_lang') == 'PDr' %}selected{% endif %}>Dravidian</option>
+                        <option value="Indo-Aryan" {% if request.args.get('origin_lang') == 'Indo-Aryan' %}selected{% endif %}>Indo-Aryan</option>
+                        <option value="PMu" {% if request.args.get('origin_lang') == 'PMu' %}selected{% endif %}>Munda</option>
+                        <option value="PNur" {% if request.args.get('origin_lang') == 'PNur' %}selected{% endif %}>Nuristani</option>
+                        <option class="divider" disabled>&mdash;</option>
+                        <option value="Ar" {% if request.args.get('origin_lang') == 'Ar' %}selected{% endif %}>Arabic</option>
+                        <option value="Eng" {% if request.args.get('origin_lang') == 'Eng' %}selected{% endif %}>English</option>
+                        <option value="Pers" {% if request.args.get('origin_lang') == 'Pers' %}selected{% endif %}>Persian</option>
+                    </select>
+                </th>
+                {% else %}
                 <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
+                {% endif %}
                 <th><input type="text" class="search-box word-filter" placeholder="Word" value="{{ request.args.get('word', '') }}"></th>
                 <th><input type="text" class="search-box origin-filter" placeholder="Origin" value="{{ request.args.get('origin', '') }}"></th>
                 <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
@@ -46,8 +62,26 @@
             </tr>
         </thead>
         {% for word in reflexes %}
+        {% if lang %}
+        {% if word.origin_lemma %}
+        <tr class="grid-row" style="border-color: #{{ word.origin_lemma.language.color }};">
+        {% else %}
         <tr class="grid-row" style="border-color: #{{ word.language.color }};">
+        {% endif %}
+        {% else %}
+        <tr class="grid-row" style="border-color: #{{ word.language.color }};">
+        {% endif %}
+            {% if lang %}
+            <td>
+                {% if word.origin_lemma %}
+                {{ word.origin_lemma.language.name }}
+                {% else %}
+                <span class="muted">&mdash;</span>
+                {% endif %}
+            </td>
+            {% else %}
             <td>{{ word.language.name }}</td>
+            {% endif %}
             <td>
                 <p><a href="/reflexes/{{ word.id }}">{{ word.word }}</a>{% if word.phonemic %} <span class="muted">/&#8288;{{ word.phonemic }}&#8288;/</span>{% endif %}</p>
             </td>
