@@ -1,4 +1,13 @@
 {% include "head.html" %}
-<h1>{{ source.short }} <span class="font-thin">[{{ source.id }}]</span></h1>
+<h1>
+    {{ source.short }} 
+    <span class="font-thin">[{{ source.id }}]</span> 
+    <span
+        class="font-thin"
+        style="font-size: 70%; background-color: {% if source.progress == 'Yes' %}#4CAF50{% elif source.progress == 'Partial' %}#FFC107{% else %}#F44336{% endif %}; color: {% if source.progress == 'Partial' %}black{% else %}white{% endif %}; padding: 5px; border-radius: 5px;"
+    >
+        {{ source.progress }}
+    </span>
+</h1>
 <p>{{ source.source | markdown | safe}}</p>
 {% include "foot.html" %}

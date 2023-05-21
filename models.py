@@ -40,6 +40,7 @@ class Reference(Base):
     id = Column(String, primary_key=True)
     short = Column(String)
     source = Column(String)
+    progress = Column(String)
 
     def __repr__(self):
         return f'<a href="/references/{self.id}">{self.short}</a>'

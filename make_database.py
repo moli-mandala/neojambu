@@ -56,7 +56,7 @@ def parse_ref(ref: str) -> List[str]:
     """parses references of the forms 'ref1:page1;ref2:page2' with pages being optional"""
     if ref == "":
         return []
-    return list(set([r.split(":")[0] for r in ref.split(";")]))
+    return list(set([r.split("[")[0] for r in ref.split(";")]))
 
 
 def create_short_ref(entry):
@@ -100,16 +100,24 @@ def main():
                 output_backend="markdown",
             )
             formatted = formatted[3:].strip()
-        except:
+        except Exception as e:
+            print(e)
             formatted = ""
+
         short = create_short_ref(sources.entries[source])
+
         while short in used_short and short != "?":
             if short[-1].isdigit() or short[-1] == "?":
                 short += "a"
             else:
                 short = short[:-1] + chr(ord(short[-1]) + 1)
         used_short.add(short)
-        reference = Reference(id=source, short=short, source=formatted)
+        reference = Reference(
+            id=source,
+            short=short,
+            source=formatted,
+            progress=sources.entries[source].fields.get("included", "No"),
+        )
         print(reference)
         session.add(reference)
 
