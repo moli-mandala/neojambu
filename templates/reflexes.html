@@ -37,10 +37,12 @@
     <table>
         <thead>
             <tr class="grid-row">
-                {% if lang %}
+                {% if not lang %}
+                <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
+                {% endif %}
                 <th>
                     <select class="search-box origin-lang-filter" name="origin-lang">
-                        <option value="">Language</option>
+                        <option value="">Source Language</option>
                         <option value="PDr" {% if request.args.get('origin_lang') == 'PDr' %}selected{% endif %}>Dravidian</option>
                         <option value="Indo-Aryan" {% if request.args.get('origin_lang') == 'Indo-Aryan' %}selected{% endif %}>Indo-Aryan</option>
                         <option value="PMu" {% if request.args.get('origin_lang') == 'PMu' %}selected{% endif %}>Munda</option>
@@ -51,14 +53,13 @@
                         <option value="Pers" {% if request.args.get('origin_lang') == 'Pers' %}selected{% endif %}>Persian</option>
                     </select>
                 </th>
-                {% else %}
-                <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
-                {% endif %}
                 <th><input type="text" class="search-box word-filter" placeholder="Word" value="{{ request.args.get('word', '') }}"></th>
                 <th><input type="text" class="search-box origin-filter" placeholder="Origin" value="{{ request.args.get('origin', '') }}"></th>
                 <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
                 <th><input type="text" class="search-box notes-filter" placeholder="Notes" value="{{ request.args.get('notes', '') }}"></th>
+                {% if lang %}
                 <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
+                {% endif %}
             </tr>
         </thead>
         {% for word in reflexes %}
@@ -71,7 +72,9 @@
         {% else %}
         <tr class="grid-row" style="border-color: #{{ word.language.color }};">
         {% endif %}
-            {% if lang %}
+            {% if not lang %}
+            <td>{{ word.language.name }}</td>
+            {% endif %}
             <td>
                 {% if word.origin_lemma %}
                 {{ word.origin_lemma.language.name }}
@@ -79,18 +82,20 @@
                 <span class="muted">&mdash;</span>
                 {% endif %}
             </td>
-            {% else %}
-            <td>{{ word.language.name }}</td>
-            {% endif %}
             <td>
                 <p><a href="/reflexes/{{ word.id }}">{{ word.word }}</a>{% if word.phonemic %} <span class="muted">/&#8288;{{ word.phonemic }}&#8288;/</span>{% endif %}</p>
             </td>
             <td>
                 {% if word.origin_lemma %}
                 <p>
-                    <a href="/entries/{{ word.origin_lemma.id }}">{{ word.origin_lemma.word }} 
-                    {% if not lang %}<small class="font-thin">[{{ word.origin_lemma.language.name }}]</small>{% endif %}
-                </a></p>
+                    <a href="/entries/{{ word.origin_lemma.id }}">
+                        {% if word.origin_lemma.word %}
+                        {{ word.origin_lemma.word }} 
+                        {% else %}
+                        <small class="font-thin">[no reconstruction]</small>
+                        {% endif %}
+                    </a>
+                </p>
                 {% else %}
                 <p class="muted">&mdash;</p>
                 {% endif %}
@@ -105,6 +110,7 @@
                 <p>{{ word.notes | markdown | safe}}</p>
                 {% endif %}
             </td>
+            {% if lang %}
             <td>
                 {% if word.references %}
                 <p>{{ word.references | join(', ') | safe }}</p>
@@ -112,6 +118,7 @@
                 <p class="muted">&mdash;</p>
                 {% endif %}
             </td>
+            {% endif %}
         </tr>
         {% endfor %}
     </table>
