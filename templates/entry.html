@@ -26,7 +26,7 @@
     <thead>
         <tr class="grid-row">
             <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
-            <th><input type="text" class="search-box entry-name-filter" placeholder="Entry" value="{{ request.args.get('entry_name', '') }}"></th>
+            <th><input type="text" class="search-box word-filter" placeholder="Word" value="{{ request.args.get('word', '') }}"></th>
             <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
             <th><input type="text" class="search-box notes-filter" placeholder="Notes" value="{{ request.args.get('notes', '') }}"></th>
             <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>

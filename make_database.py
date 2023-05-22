@@ -149,7 +149,7 @@ def main():
         lines = f.readlines()
         reader = csv.DictReader(lines)
         for row in tqdm(reader, total=len(lines)):
-            iden = "src_" + row["ID"]
+            iden = row["ID"]
             parameter = Lemma(
                 id=iden,
                 word=row["Name"],
@@ -167,7 +167,6 @@ def main():
         lines = f.readlines()
         reader = csv.DictReader(lines)
         for row in tqdm(reader, total=len(lines)):
-            row["Parameter_ID"] = "src_" + row["Parameter_ID"]
             lemma = Lemma(
                 id=row["ID"],
                 word=row["Form"],
@@ -178,7 +177,7 @@ def main():
                 notes=row["Description"],
                 language_id=row["Language_ID"],
                 origin_lemma_id=row["Parameter_ID"],
-                cognateset=row["Cognateset"] if row["Cognateset"] != row["Parameter_ID"] else None,
+                cognateset=row["Cognateset"],
                 relation="i",
             )
 
