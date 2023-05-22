@@ -1,1 +1,1 @@
-web: gunicorn app:app
+web: sh -c 'curl -L https://github.com/moli-mandala/data/releases/latest/download/data.db -o data.db && gunicorn app:app'
