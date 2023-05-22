@@ -158,18 +158,21 @@ def entries(entry=None, lang=None):
             )
 
             # group reflexes by cognate set first (i.e. subgroup)
-            reflexes_cognatesets = reflexes_query.order_by(Lemma.cognateset, Language.order, Language.name).all()
-            grouped_cognatesets = {
-                key: list(group)
+            reflexes_cognatesets = reflexes_query.order_by(Lemma.cognateset).all()
+            grouped_cognatesets = [
+                [key, list(group)]
                 for key, group in groupby(reflexes_cognatesets, key=lambda lemma: lemma.cognateset)
-            }
+            ]
+            grouped_cognatesets.sort(key=lambda x: x[1][0].id)
 
             # subgroup each cognateset by language
-            for cognateset in grouped_cognatesets:
-                grouped_cognatesets[cognateset] = {
-                    key: list(group)
-                    for key, group in groupby(grouped_cognatesets[cognateset], key=lambda lemma: lemma.language)
-                }
+            for i in range(len(grouped_cognatesets)):
+                print(grouped_cognatesets[i][0])
+                grouped_cognatesets[i][1] = [
+                    (key, list(group))
+                    for key, group in groupby(grouped_cognatesets[i][1], key=lambda lemma: lemma.language)
+                ]
+                grouped_cognatesets[i][1].sort(key=lambda x: x[0].order)
 
             # by langs separately (for dots on map)
             reflexes_langs = reflexes_query.order_by(Language.order, Language.name).all()

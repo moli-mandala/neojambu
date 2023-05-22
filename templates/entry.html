@@ -32,13 +32,13 @@
             <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
         </tr>
     </thead>
-    {% for group, cognateset in reflexes.items() %}
-    {% if group != entry.id %}
+    {% for group, cognateset in reflexes %}
+    {% if group %}
     <tr>
-        <td colspan=5><h2>{{ group }}</h2></td>
+        <td colspan=5><h2 class="font-thin">{{ group | safe }}</h2></td>
     </tr>
     {% endif %}
-    {% for lang, refs in cognateset.items() %}
+    {% for lang, refs in cognateset %}
     <tbody class="grid-group" style="border-color: #{{ lang.color }}">
     {% for reflex in refs %}
     <tr class="grid-group-row">
