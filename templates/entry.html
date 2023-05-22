@@ -35,7 +35,13 @@
     {% for group, cognateset in reflexes %}
     {% if group %}
     <tr>
-        <td colspan=5><h2 class="font-thin">{{ group | safe }}</h2></td>
+        <td colspan=5><h2 class="font-thin">
+            {% if ':' in group %}
+            <small class="font-thin">[{{ group.split(':')[0] }}]</small> {{ ''.join(group.split(':')[1:]) | safe}}
+            {% else %}
+            {{ group | safe }}
+            {% endif %}
+        </h2></td>
     </tr>
     {% endif %}
     {% for lang, refs in cognateset %}

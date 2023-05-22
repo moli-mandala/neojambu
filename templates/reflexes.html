@@ -87,7 +87,10 @@
             </td>
             <td>
                 {% if word.origin_lemma %}
-                <p><a href="/entries/{{ word.origin_lemma.id }}">{{ word.origin_lemma.word }} <small class="font-thin">[{{ word.origin_lemma.language.name }}]</small></a></p>
+                <p>
+                    <a href="/entries/{{ word.origin_lemma.id }}">{{ word.origin_lemma.word }} 
+                    {% if not lang %}<small class="font-thin">[{{ word.origin_lemma.language.name }}]</small>{% endif %}
+                </a></p>
                 {% else %}
                 <p class="muted">&mdash;</p>
                 {% endif %}

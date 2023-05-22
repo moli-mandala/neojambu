@@ -21,6 +21,14 @@
             {% endif %}
         </div>
         <div class="grid-row">
+            <p>Subset</p>
+            {% if reflex.cognateset %}
+            <p><small class="font-thin">[{{ reflex.cognateset.split(':')[0] }}]</small> {{ ''.join(reflex.cognateset.split(':')[1:]) | safe}}</p>
+            {% else %}
+            <p class="muted">&mdash;</p>
+            {% endif %}
+        </div>
+        <div class="grid-row">
             <p>Pronunciation</p>
             {% if reflex.phonemic %}
             <p>/{{ reflex.phonemic }}/</p>
