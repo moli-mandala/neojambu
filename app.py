@@ -8,7 +8,6 @@ from make_database import colors
 from markdown import markdown
 from jinja2 import Environment
 from itertools import groupby
-from pprint import pprint
 
 from search import filter_data
 
@@ -167,12 +166,11 @@ def entries(entry=None, lang=None):
 
             # subgroup each cognateset by language
             for i in range(len(grouped_cognatesets)):
-                print(grouped_cognatesets[i][0])
+                grouped_cognatesets[i][1].sort(key=lambda x: (x.language.order, x.language.name))
                 grouped_cognatesets[i][1] = [
                     (key, list(group))
                     for key, group in groupby(grouped_cognatesets[i][1], key=lambda lemma: lemma.language)
                 ]
-                grouped_cognatesets[i][1].sort(key=lambda x: x[0].order)
 
             # by langs separately (for dots on map)
             reflexes_langs = reflexes_query.order_by(Language.order, Language.name).all()
