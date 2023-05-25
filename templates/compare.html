@@ -59,12 +59,12 @@
             <p><a href="/entries/{{ key }}">{{ lang_dict[key][0].origin_lemma.word }} <span class="font-thin">[{{ key }}]</a></p>
             <div>
                 {% for entry in lang_dict[key] %}
-                    <p><a href="/reflexes/{{ entry.id }}">{{ entry.word }}</a>{% if entry.gloss %} <span class="muted">‘&#8288;{{ entry.gloss }}&#8288;’</span>{% endif %}{% if entry.phonemic %} <span class="muted">/&#8288;{{ entry.phonemic }}&#8288;/</span>{% endif %}</p>
+                    <p><a href="/reflexes/{{ entry.id }}">{{ entry.word }}</a>{% if entry.gloss %} <span class="muted">‘&#8288;{{ entry.gloss | striptags }}&#8288;’</span>{% endif %}{% if entry.phonemic %} <span class="muted">/&#8288;{{ entry.phonemic }}&#8288;/</span>{% endif %}</p>
                 {% endfor %}
             </div>
             <div>
                 {% for entry in lang2_dict[key] %}
-                    <p><a href="/reflexes/{{ entry.id }}">{{ entry.word }}</a>{% if entry.gloss %} <span class="muted">‘&#8288;{{ entry.gloss }}&#8288;’</span>{% endif %}{% if entry.phonemic %} <span class="muted">/&#8288;{{ entry.phonemic }}&#8288;/</span>{% endif %}</p>
+                    <p><a href="/reflexes/{{ entry.id }}">{{ entry.word }}</a>{% if entry.gloss %} <span class="muted">‘&#8288;{{ entry.gloss | striptags }}&#8288;’</span>{% endif %}{% if entry.phonemic %} <span class="muted">/&#8288;{{ entry.phonemic }}&#8288;/</span>{% endif %}</p>
                 {% endfor %}
             </div>
         </div>
@@ -78,14 +78,14 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical
 	attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service',
 	maxZoom: 8
 }).addTo(map)
-var iconSvg = `{{ lang1.to_map_marker() | safe }}`
+var iconSvg = `{{ lang1.map_marker | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,
             iconSize: [15, 15]
         } );
 L.marker([{{ lang1.lat }}, {{ lang1.long }}], {icon: icon}).bindTooltip("<strong>{{ lang1.name }}</strong>").openTooltip().addTo(map)
-var iconSvg = `{{ lang2.to_map_marker() | safe }}`
+var iconSvg = `{{ lang2.map_marker | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,

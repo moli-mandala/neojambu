@@ -81,13 +81,16 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical
 	maxZoom: 8
 }).addTo(map)
 {% for lang, reflexes in grouped_langs.items() %}
-var iconSvg = `{{ lang.to_map_marker() | safe }}`
+var iconSvg = `{{ lang.map_marker | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,
             iconSize: [15, 15]
         } );
-L.marker([{{ lang.lat }}, {{ lang.long }}], {icon: icon}).bindTooltip("{% for reflex in reflexes %}{% if loop.index != 1 %}, {% endif %}{{ reflex.word | safe }}{% endfor %}").addTo(map)
+var marker = L.marker([{{ lang.lat }}, {{ lang.long }}], {icon: icon})
+marker.bindTooltip("{% for reflex in reflexes %}{% if loop.index != 1 %}, {% endif %}{{ reflex.word | striptags }}{% endfor %}")
+marker.bindPopup(`<h2>{{ lang.name }}</h2><ul>{% for reflex in reflexes %}<li><a href="/reflexes/{{reflex.id}}">{{ reflex.word | striptags }}</a></li>{% endfor %}</ul>`)
+marker.addTo(map)
 {% endfor %}
 function toggleTooltips() {
     var checkbox = document.getElementById("show-tooltips");

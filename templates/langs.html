@@ -43,13 +43,17 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical
 	maxZoom: 8
 }).addTo(map)
 {% for lang in langs %}
-var iconSvg = `{{ lang.to_map_marker() | safe }}`
+var iconSvg = `{{ lang.map_marker | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,
             iconSize: [15, 15]
         } );
-L.marker([{{ lang.lat }}, {{ lang.long }}], {icon: icon}).bindTooltip("{{ lang.name }} <span class=\"font-thin\">({{ lang.lemma_count }})</span>").addTo(map)
+var marker = L.marker([{{ lang.lat }}, {{ lang.long }}], {icon: icon}).bindTooltip("{{ lang.name }} <span class=\"font-thin\">({{ lang.lemma_count }})</span>")
+marker.on('click', function(e) {
+    window.location.href = "/languages/{{ lang.id }}";
+});
+marker.addTo(map)
 {% endfor %}
 function toggleTooltips() {
     var checkbox = document.getElementById("show-tooltips");

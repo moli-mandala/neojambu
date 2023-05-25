@@ -37,11 +37,13 @@
             {% endif %}
         </div>
         <div class="grid-row">
-            <p>Gloss</p>
+            <div>Gloss</div>
             {% if reflex.gloss %}
-            <p>{{ reflex.gloss | safe }}</p>
+            <div>
+                {{ reflex.gloss | striptags }}
+            </div>
             {% else %}
-            <p class="muted">&mdash;</p>
+            <div class="muted">&mdash;</div>
             {% endif %}
         </div>
         <div class="grid-row">
@@ -82,7 +84,7 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical
     attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service',
     maxZoom: 8
 }).addTo(map)
-var iconSvg = `{{ reflex.language.to_map_marker() | safe }}`
+var iconSvg = `{{ reflex.language.map_marker | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,

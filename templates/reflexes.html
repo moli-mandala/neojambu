@@ -73,7 +73,7 @@
         <tr class="grid-row" style="border-color: #{{ word.language.color }};">
         {% endif %}
             {% if not lang %}
-            <td>{{ word.language.name }}</td>
+            <td><a href="/languages/{{word.language_id}}">{{ word.language.name }}</a></td>
             {% endif %}
             <td>
                 {% if word.origin_lemma %}
@@ -144,7 +144,7 @@ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Physical
 	attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service',
 	maxZoom: 8
 }).addTo(map)
-var iconSvg = `{{ lang.to_map_marker() | safe }}`
+var iconSvg = `{{ lang.map_marker | safe }}`
 var iconUrl = 'data:image/svg+xml;base64,' + btoa(iconSvg)
 var icon = L.icon( {
             iconUrl: iconUrl,

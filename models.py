@@ -18,8 +18,9 @@ class Language(Base):
     lemma_count = Column(Integer, default=0)
     order = Column(Integer)
 
-    def to_map_marker(self):
-        if self.clade in ["MIA", "OIA"] or "Old" in self.name:
+    @property
+    def map_marker(self):
+        if self.clade in ["MIA", "OIA"] or "Old" in self.name or "Proto" in self.name:
             return f"""<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><polygon points="0,15 15,0 30,15 15,30" fill="#{self.color}" stroke="black" stroke-width="2"/></svg>"""
         return f"""<svg viewBox="-2 -2 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="14" r="13" fill="#{self.color}" stroke="black" stroke-width="2"/></svg>"""
 

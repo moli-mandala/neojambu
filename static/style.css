@@ -38,8 +38,12 @@ smallcaps {
 }
 
 .nav a {
-    color: white;
-    text-decoration: none;
+    color: white !important;
+    text-decoration: none !important;
+}
+
+.nav a:hover {
+    color: white !important;
 }
 
 .nav > * {
@@ -51,13 +55,13 @@ smallcaps {
     padding: 1rem 3rem;
 }
 
-.content a {
-    color: rgba(185, 28, 28);
-    text-decoration: none;
+a {
+    color: rgba(185, 28, 28) !important;
+    text-decoration: none !important;
 }
 
-.content a:hover {
-    color: rgba(127, 29, 29);
+a:hover {
+    color: rgba(127, 29, 29) !important;
 }
 
 .floater {
@@ -250,4 +254,15 @@ table input, table select {
 .divider {
     color: #999999;
     font-style: italic;
+}
+
+/* popups in leaflet */
+.leaflet-popup-content ul {
+    padding-left: 1rem;
+    margin-top: 0;
+    font-size: 0.9rem;
+}
+
+.leaflet-popup-content h2 {
+    margin-bottom: 0.5rem;
 }
