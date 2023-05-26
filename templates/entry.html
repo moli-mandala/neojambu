@@ -41,6 +41,10 @@
             {% endif %}
         </h2></td>
     </tr>
+    {% else %}
+    <tr>
+        <td colspan=5><h2 class="font-thin">Unclassified</h2></td>
+    </tr>
     {% endif %}
     {% for lang, refs in cognateset %}
     <tbody class="grid-group" style="border-color: #{{ lang.color }}">
