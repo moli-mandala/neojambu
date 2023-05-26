@@ -4,11 +4,9 @@
 </h1>
 <div class="description">
     <p>{{ entry.gloss | safe }}</p>
-    {% if entry.clades %}
     <div class="clades">
-        {% for clade in order %}<div class="clade-block-lg" title="{{ clade }}"{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}></div>{% endfor %}
+        {% for clade in order %}<div class="clade-block-lg" title="{{ clade }}"{% if entry.clades %}{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}{% endif %}></div>{% endfor %}
     </div>
-    {% endif %}
     {% if entry.notes %}
     <h3>Etymological notes</h3>
     <p>{{ entry.notes | markdown | safe }}</p>

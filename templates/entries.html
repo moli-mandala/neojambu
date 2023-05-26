@@ -28,7 +28,7 @@
             <td>
                 <p>{{ entry.language.name }}</p>
                 <div>
-                    {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}></div>{% endfor %}
+                    {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if entry.clades %}{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}{% endif %}></div>{% endfor %}
                 </div>
             </td>
             <td><a href="/entries/{{ entry.id }}">{{ entry.word }} <span class="font-thin">[{{ entry.id }}]</span></a></td>
