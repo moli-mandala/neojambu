@@ -91,9 +91,8 @@
                     <a href="/entries/{{ word.origin_lemma.id }}">
                         {% if word.origin_lemma.word %}
                         {{ word.origin_lemma.word }} 
-                        {% else %}
-                        <small class="font-thin">[no reconstruction]</small>
                         {% endif %}
+                        <small class="font-thin">[{{ word.origin_lemma_id }}]</small>
                     </a>
                 </p>
                 {% else %}

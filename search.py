@@ -7,6 +7,16 @@ Date: 2023-05-19
 
 from models import Language, Lemma, Concept, Reference
 
+sort = {
+    "lang": Language.name,
+    "word": Lemma.word,
+    "gloss": Lemma.gloss,
+    "notes": Lemma.notes,
+    "source": Reference.short,
+    "origin": Lemma.word,
+    "clade": Language.clade,
+}
+
 filters = {
     "lang": lambda x, y, z: x.filter(Language.name.like("%" + y + "%")),
     "word": lambda x, y, z: x.filter(Lemma.word.like("%" + y + "%")),
@@ -26,8 +36,21 @@ filters = {
 
 
 def filter_data(query, request, model):
+    # sort
+    order, col = None, None
+    s = request.args.get("sort", None)
+    if s:
+        order, col = s.split("_")
+
+    # filter
     for i in filters:
         r = request.args.get(i, None)
         if r:
             query = filters[i](query, r, model)
+        if col == i and col in sort:
+            if order == "asc":
+                query = query.order_by(sort[col])
+            elif order == "desc":
+                query = query.order_by(sort[col].desc())
+
     return query

@@ -145,10 +145,11 @@ def main():
 
     # parameters
     params = {}
+    i = 0
     with open("../data/cldf/parameters.csv", "r") as f:
         lines = f.readlines()
         reader = csv.DictReader(lines)
-        for row in tqdm(reader, total=len(lines)):
+        for i, row in enumerate(tqdm(reader, total=len(lines))):
             iden = row["ID"]
             parameter = Lemma(
                 id=iden,
@@ -156,6 +157,7 @@ def main():
                 gloss=row["Description"],
                 language_id=row["Language_ID"],
                 notes=row["Etyma"],
+                order=i,
             )
             params[iden] = parameter
             session.add(parameter)
@@ -166,7 +168,17 @@ def main():
     with open("../data/cldf/forms.csv", "r") as f:
         lines = f.readlines()
         reader = csv.DictReader(lines)
-        for row in tqdm(reader, total=len(lines)):
+        for i, row in enumerate(tqdm(reader, total=len(lines))):
+            # parse borrowing/semi-tatsama in parameter
+            relation = "i"
+            if row["Parameter_ID"][0] == ">":
+                row["Parameter_ID"] = row["Parameter_ID"][1:]
+                relation = "b"
+            elif row["Parameter_ID"][0] == "~":
+                row["Parameter_ID"] = row["Parameter_ID"][1:]
+                relation = "s"
+
+            # make lemma
             lemma = Lemma(
                 id=row["ID"],
                 word=row["Form"],
@@ -178,7 +190,8 @@ def main():
                 language_id=row["Language_ID"],
                 origin_lemma_id=row["Parameter_ID"],
                 cognateset=row["Cognateset"],
-                relation="i",
+                relation=relation,
+                order=i,
             )
 
             # language ct

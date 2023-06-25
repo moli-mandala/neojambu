@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, ForeignKey, Enum
-from sqlalchemy.orm import sessionmaker, relationship, backref
+from sqlalchemy.orm import sessionmaker, relationship, backref, aliased
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -59,6 +59,7 @@ class Lemma(Base):
     notes = Column(String)
     clades = Column(String)
     cognateset = Column(String)
+    order = Column(Integer)
 
     language_id = Column(String, ForeignKey("languages.id"))
     origin_lemma_id = Column(
@@ -76,7 +77,6 @@ class Lemma(Base):
 
     def __repr__(self):
         return f"<Lemma(id='{self.id}', word='{self.word}', gloss='{self.gloss}', native='{self.native}', phonemic='{self.phonemic}', original='{self.original}', notes='{self.notes}', language_id='{self.language_id}', origin_lemma_id='{self.origin_lemma_id}', relation='{self.relation}')>"
-
 
 # Association tables
 class LemmaConcept(Base):

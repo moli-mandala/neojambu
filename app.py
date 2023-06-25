@@ -39,7 +39,7 @@ def reflexes(reflex=None):
         return "Lemma not found"
     else:
         lemmas = filter_data(session.query(Lemma).join(Language), request, Lemma)
-        lemmas = lemmas.order_by(Lemma.origin_lemma_id, Language.clade, Language.name)
+        lemmas = lemmas.order_by(Lemma.order, Language.clade, Language.name)
         return render_template(
             "reflexes.html",
             reflexes=lemmas.limit(50).offset(page * 50 - 50).all(),
@@ -59,12 +59,16 @@ def languages(lang1=None, lang2=None):
             session.query(Lemma)
             .filter_by(language_id=lang1)
             .filter(Lemma.origin_lemma_id is not None)
+            .join(Lemma.origin_lemma, aliased=True)
+            .order_by(Lemma.order)
             .all()
         )
         lang2_data = (
             session.query(Lemma)
             .filter_by(language_id=lang2)
             .filter(Lemma.origin_lemma_id is not None)
+            .join(Lemma.origin_lemma, aliased=True)
+            .order_by(Lemma.order)
             .all()
         )
         lang1_data = [(x.origin_lemma_id, x) for x in lang1_data]
@@ -84,7 +88,6 @@ def languages(lang1=None, lang2=None):
         for i in lang1_dict:
             if i in lang2_dict:
                 both.append(i)
-        both.sort()
 
         lang1 = session.query(Language).filter_by(id=lang1).first()
         lang2 = session.query(Language).filter_by(id=lang2).first()
@@ -115,6 +118,7 @@ def languages(lang1=None, lang2=None):
                 .options(joinedload(Lemma.origin_lemma))
             )
             lemmas = filter_data(lemmas.join(Language), request, Lemma)
+            lemmas = lemmas.join(Lemma.origin_lemma, aliased=True).order_by(Lemma.order)
 
             return render_template(
                 "reflexes.html",
@@ -191,7 +195,7 @@ def entries(entry=None, lang=None):
         else:
             return "Entry not found"
     else:
-        entries_query = session.query(Lemma).filter(Lemma.origin_lemma_id == None)
+        entries_query = session.query(Lemma).filter(Lemma.origin_lemma_id == None).order_by(Lemma.order)
         entries = filter_data(entries_query.join(Language), request, Lemma)
         return render_template(
             "entries.html",
