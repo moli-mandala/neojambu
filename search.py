@@ -54,3 +54,8 @@ def filter_data(query, request, model):
                 query = query.order_by(sort[col].desc())
 
     return query
+
+
+def filter_page(query, request):
+    page = int(request.args.get("page"))
+    return query.limit(50).offset(int(page) * 50 - 50).all()

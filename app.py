@@ -1,15 +1,13 @@
 from flask import Flask, render_template, request, url_for
-import sqlite3
-
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, joinedload
+from sqlalchemy.orm import sessionmaker, joinedload, Query
 from models import Language, Lemma, Concept, Reference
 from make_database import colors
 from markdown import markdown
 from jinja2 import Environment
 from itertools import groupby
 
-from search import filter_data
+from search import filter_data, filter_page
 
 app = Flask(__name__)
 app.jinja_env.filters["markdown"] = lambda text: markdown(text.replace("\\n", "\n\n"))
@@ -24,6 +22,86 @@ order = list(colors.keys())
 @app.route("/")
 def hello_world():
     return render_template("index.html", title="Home")
+
+def serialise(query):
+    if type(query) in [Query, list]:
+        return [serialise(row) for row in query]
+    else:
+        result = query.__dict__
+        if "_sa_instance_state" in result:
+            del result['_sa_instance_state']
+        return result
+
+@app.route("/query")
+def query():
+    type = request.args.get("type")
+
+    # a single reflex
+    if type == "reflex":
+        reflex = request.args.get("reflex")
+        lemma = session.query(Lemma).filter_by(id=reflex).first()
+        return serialise(lemma)
+
+    # list of reflexes
+    if type == "reflexes":
+        lemmas = filter_data(session.query(Lemma).join(Language), request, Lemma)
+        lemmas = lemmas.order_by(Lemma.order, Language.clade, Language.name)
+        lemmas = filter_page(lemmas, request)
+        return serialise(lemmas)
+    
+    # a single language's reflexes
+    if type == "language":
+        language = request.args.get("language")
+        lang = session.query(Language).filter_by(id=language).first()
+        lemmas = (
+            session.query(Lemma)
+            .filter_by(language_id=language)
+            .options(joinedload(Lemma.origin_lemma))
+            .join(Language)
+        )
+        lemmas = filter_data(lemmas, request, Lemma)
+        lemmas = lemmas.join(Lemma.origin_lemma, aliased=True).order_by(Lemma.order)
+        lemmas = filter_page(lemmas, request)
+
+        result = serialise(lemmas)
+        for i in range(len(result)):
+            result[i]['origin_lemma'] = serialise(lang)
+        return result
+    
+    # all languages
+    if type == "languages":
+        langs = session.query(Language).order_by(Language.order, Language.name)
+        langs = filter_data(langs, request, Language)
+        return serialise(langs)
+
+    # a single entry's reflexes
+    if type == "entry":
+        entry = request.args.get("entry")
+        reflexes = filter_data(
+            session.query(Lemma).filter_by(origin_lemma_id=entry).join(Language),
+            request,
+            Lemma,
+        )
+        return serialise(reflexes)
+    
+    # all entries
+    if type == "entries":
+        entries = session.query(Lemma).filter(Lemma.origin_lemma_id == None).order_by(Lemma.order)
+        entries = filter_data(entries.join(Language), request, Lemma)
+        entries = filter_page(entries, request)
+        return serialise(entries)
+    
+    # single ref
+    if type == "reference":
+        reference = request.args.get("reference")
+        source = session.query(Reference).filter_by(id=reference).first()
+        return serialise(source)
+    
+    # all refs
+    if type == "references":
+        sources = session.query(Reference)
+        sources = filter_data(sources, request, Reference)
+        return serialise(sources)
 
 
 @app.route("/reflexes")

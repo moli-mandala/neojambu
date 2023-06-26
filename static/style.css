@@ -266,3 +266,13 @@ table input, table select {
 .leaflet-popup-content h2 {
     margin-bottom: 0.5rem;
 }
+
+/* sort */
+.sort {
+    margin: 0;
+    display: inline;
+}
+
+.sort button {
+    height: 15px;
+}
