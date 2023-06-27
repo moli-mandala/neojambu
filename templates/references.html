@@ -3,8 +3,10 @@
 <div>
     <table>
         {% for source in sources %}
-        <tr class="grid-row" style="border-color: {% if source.progress == 'Yes' %}#4CAF50{% elif source.progress == 'Partial' %}#FFC107{% else %}#F44336{% endif %};">
-            <td><a href="/references/{{ source.id }}">{{ source.short }}</a> <span class="font-thin">[{{ source.id }}]</span></td>
+        <tr class="lang-row">
+            <td class="lang-cell" style="border-left-color: {% if source.progress == 'Yes' %}#4CAF50{% elif source.progress == 'Partial' %}#FFC107{% else %}#F44336{% endif %};">
+                <a href="/references/{{ source.id }}">{{ source.short }}</a> <span class="font-thin">[{{ source.id }}]</span>
+            </td>
             <td style="flex: 3 3 0px;">
             {% if source.source %}
             {{ source.source | markdown | safe}}

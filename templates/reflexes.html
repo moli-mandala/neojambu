@@ -5,26 +5,24 @@
 </h1>
 {% if lang %}
 <div class="lang-box">
-    <div style="width: 50%;">
-        <div class="grid" style="margin-top: 0;">
-            <div class="grid-row">
-                <p>Family</p>
-                <p>{{ lang.clade }}</p>
-            </div>
-            <div class="grid-row">
-                <p>Glottolog</p>
-                <p><a href="https://glottolog.org/resource/languoid/id/{{ lang.glottocode }}">{{ lang.glottocode }}</a></p>
-            </div>
-            <div class="grid-row">
-                <p>Coordinates</p>
-                <p>{{ lang.lat }}, {{ lang.long }}</p>
-            </div>
-            <div class="grid-row">
-                <p>Reflexes</p>
-                <p>{{ lang.lemma_count }}</p>
-            </div>
-        </div>
-    </div>
+    <table style="width: 50%; margin-top: 0;">
+        <tr class="lang-row">
+            <td>Family</td>
+            <td>{{ lang.clade }}</td>
+        </tr>
+        <tr class="lang-row">
+            <td>Glottolog</td>
+            <td><a href="https://glottolog.org/resource/languoid/id/{{ lang.glottocode }}">{{ lang.glottocode }}</a></td>
+        </tr>
+        <tr class="lang-row">
+            <td>Coordinates</td>
+            <td>{{ lang.lat }}, {{ lang.long }}</td>
+        </tr>
+        <tr class="lang-row">
+            <td>Reflexes</td>
+            <td>{{ lang.lemma_count }}</td>
+        </tr>
+    </table>
     <div style="width: 25%;"></div>
     <div style="width: 25%;">
         <div class="rounded shadow" style="width: 100%; height: 250px;" id="map">
@@ -32,11 +30,11 @@
     </div>
 </div>
 {% endif %}
-<p clas="muted">Showing {{ reflexes | length }} of {{ count }} reflexes.</p>
+<p class="muted showing">Showing {{ reflexes | length }} of {{ count }} reflexes.</p>
 <div class="mt-5">
     <table>
         <thead>
-            <tr class="grid-row">
+            <tr class="lang-row">
                 {% if not lang %}
                 <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
                 {% endif %}
@@ -62,19 +60,13 @@
                 {% endif %}
             </tr>
         </thead>
+        <tbody class="results">
         {% for word in reflexes %}
-        {% if lang %}
-        {% if word.origin_lemma %}
-        <tr class="grid-row" style="border-color: #{{ word.origin_lemma.language.color }};">
-        {% else %}
-        <tr class="grid-row" style="border-color: #{{ word.language.color }};">
-        {% endif %}
-        {% else %}
-        <tr class="grid-row" style="border-color: #{{ word.language.color }};">
-        {% endif %}
+        <tr class="lang-row">
             {% if not lang %}
-            <td><a href="/languages/{{word.language_id}}">{{ word.language.name }}</a></td>
-            {% endif %}
+            <td class="lang-cell" style="border-left-color: #{{ word.language.color }};">
+                <a href="/languages/{{word.language_id}}">{{ word.language.name }}</a>
+            </td>
             <td>
                 {% if word.origin_lemma %}
                 {{ word.origin_lemma.language.name }}
@@ -82,6 +74,16 @@
                 <span class="muted">&mdash;</span>
                 {% endif %}
             </td>
+            {% else %}
+            {% if word.origin_lemma %}
+            <td class="lang-cell" style="border-left-color: #{{ word.origin_lemma.language.color }};">
+                {{ word.origin_lemma.language.name }}
+            {% else %}
+            <td class="lang-cell" style="border-left-color: #{{ word.language.color }};">
+                <span class="muted">&mdash;</span>
+            {% endif %}
+            </td>
+            {% endif %}
             <td>
                 <p><a href="/reflexes/{{ word.id }}">{{ word.word }}</a>{% if word.phonemic %} <span class="muted">/&#8288;{{ word.phonemic }}&#8288;/</span>{% endif %}</p>
             </td>
@@ -120,6 +122,7 @@
             {% endif %}
         </tr>
         {% endfor %}
+        </tbody>
     </table>
 </div>
 {% if page %}

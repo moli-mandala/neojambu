@@ -22,7 +22,7 @@
 </div>
 <table>
     <thead>
-        <tr class="grid-row">
+        <tr class="lang-row">
             <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
             <th><input type="text" class="search-box word-filter" placeholder="Word" value="{{ request.args.get('word', '') }}"></th>
             <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
@@ -30,6 +30,7 @@
             <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
         </tr>
     </thead>
+    <tbody class="results">
     {% for group, cognateset in reflexes %}
     {% if group %}
     <tr>
@@ -47,15 +48,13 @@
     </tr>
     {% endif %}
     {% for lang, refs in cognateset %}
-    <tbody class="grid-group" style="border-color: #{{ lang.color }}">
     {% for reflex in refs %}
-    <tr class="grid-group-row">
+    <tr class="lang-row">
         {% if loop.first %}
-        <td>
+        <td class="lang-cell" style="border-left-color: #{{ lang.color }}" rowspan="{{ refs|length }}">
             <p><a href="/languages/{{ lang.id }}">{{ reflex.language.name }}</a></p>
         </td>
         {% else %}
-        <td></td>
         {% endif %}
         <td>
             <p><a href="/reflexes/{{ reflex.id }}">{{ reflex.word }}</a>{% if reflex.phonemic %} <span class="muted">/&#8288;{{ reflex.phonemic }}&#8288;/</span>{% endif %}</p>
@@ -72,8 +71,8 @@
     </tr>
     {% endfor %}
     {% endfor %}
-    </tbody>
     {% endfor %}
+    </tbody>
 </table>
 <script>
 var map = L.map('map').setView([20.5937, 78.9629], 4);

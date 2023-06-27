@@ -10,19 +10,20 @@
     <input type="checkbox" id="show-tooltips" onchange="toggleTooltips()">
     <label for="show-tooltips">Show all tooltips</label>
 </div>
-<p clas="muted">Showing {{ count }} languages.</p>
+<p class="muted showing">Showing {{ count }} languages.</p>
 <table>
     <thead>
-        <tr class="grid-row">
+        <tr class="lang-row">
             <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
             <th><input type="text" class="search-box clade-filter" placeholder="Clade" value="{{ request.args.get('clade', '') }}"></th>
             <th><input type="text" class="search-box" placeholder="Coordinates" readonly></th>
             <th><input type="text" class="search-box" placeholder="Reflexes" readonly></th>
         </tr>
     </thead>
+    <tbody class="results">
     {% for lang in langs %}
-    <tr class="grid-row" style="border-color: #{{ lang.color }};">
-        <td><a href="/languages/{{ lang.id }}">{{ lang.name }}</a> <span class="font-thin">[{{ lang.id }}]</span></td>
+    <tr class="lang-row">
+        <td class="lang-cell" style="border-left-color: #{{ lang.color }};"><a href="/languages/{{ lang.id }}">{{ lang.name }}</a> <span class="font-thin">[{{ lang.id }}]</span></td>
         <td>
             {{ lang.clade }}
         </td>
@@ -34,6 +35,7 @@
         </td>
     </tr>
     {% endfor %}
+    </tbody>
 </table>
 <script>
 var map = L.map('map').setView([20.5937, 78.9629], 4);

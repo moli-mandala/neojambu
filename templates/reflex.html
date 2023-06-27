@@ -3,74 +3,78 @@
     <a class="text-red-700 hover:text-red-900" href="/languages/{{ reflex.language.id }}">{{ reflex.language.name }}</a> <span>{{ reflex.word }}</span> <span class="font-thin">[{{ reflex.id }}]</span>
 </h1>
 <div class="lang-box">
-    <div class="grid" style="margin-top: 0; width: 50%;">
-        <div class="grid-row">
-            <p>Reflex</p>
-            <p>{{ reflex.word }}</p>
-        </div>
-        <div class="grid-row">
-            <p>Language</p>
-            <p><a href="/languages/{{reflex.language.id}}">{{ reflex.language.name }}</a></p>
-        </div>
-        <div class="grid-row">
-            <p>Entry</p>
+    <table style="margin-top: 0; width: 50%;">
+        <tr class="lang-row">
+            <th>Property</th>
+            <th>Value</th>
+        </tr>
+        <tr class="lang-row">
+            <td>Reflex</td>
+            <td>{{ reflex.word }}</td>
+        </tr>
+        <tr class="lang-row">
+            <td>Language</td>
+            <td><a href="/languages/{{reflex.language.id}}">{{ reflex.language.name }}</a></td>
+        </tr>
+        <tr class="lang-row">
+            <td>Entry</td>
             {% if reflex.origin_lemma %}
-            <p><a href="/entries/{{reflex.origin_lemma_id}}">{{ reflex.origin_lemma.word }} <span class="font-thin">[{{ reflex.origin_lemma_id }}]</span></a></p>
+            <td><a href="/entries/{{reflex.origin_lemma_id}}">{{ reflex.origin_lemma.word }} <span class="font-thin">[{{ reflex.origin_lemma_id }}]</span></a></td>
             {% else %}
-            <p class="muted">&mdash;</p>
+            <td class="muted">&mdash;</td>
             {% endif %}
-        </div>
-        <div class="grid-row">
-            <p>Subset</p>
+        </tr>
+        <tr class="lang-row">
+            <td>Subset</td>
             {% if reflex.cognateset %}
-            <p><small class="font-thin">[{{ reflex.cognateset.split(':')[0] }}]</small> {{ ''.join(reflex.cognateset.split(':')[1:]) | safe}}</p>
+            <td><small class="font-thin">[{{ reflex.cognateset.split(':')[0] }}]</small> {{ ''.join(reflex.cognateset.split(':')[1:]) | safe}}</td>
             {% else %}
-            <p class="muted">&mdash;</p>
+            <td class="muted">&mdash;</td>
             {% endif %}
-        </div>
-        <div class="grid-row">
-            <p>Pronunciation</p>
+        </tr>
+        <tr class="lang-row">
+            <td>Pronunciation</td>
             {% if reflex.phonemic %}
-            <p>/{{ reflex.phonemic }}/</p>
+            <td>/{{ reflex.phonemic }}/</td>
             {% else %}
-            <p class="muted">&mdash;</p>
+            <td class="muted">&mdash;</td>
             {% endif %}
-        </div>
-        <div class="grid-row">
-            <div>Gloss</div>
+        </tr>
+        <tr class="lang-row">
+            <td>Gloss</td>
             {% if reflex.gloss %}
-            <div>
+            <td>
                 {{ reflex.gloss | striptags }}
-            </div>
+            </td>
             {% else %}
-            <div class="muted">&mdash;</div>
+            <td class="muted">&mdash;</td>
             {% endif %}
-        </div>
-        <div class="grid-row">
-            <p>Native</p>
+        </tr>
+        <tr class="lang-row">
+            <td>Native</td>
             {% if reflex.native %}
-            <p>{{ reflex.native }}</p>
+            <td>{{ reflex.native }}</td>
             {% else %}
-            <p class="muted">&mdash;</p>
+            <td class="muted">&mdash;</td>
             {% endif %}
-        </div>
-        <div class="grid-row">
-            <p>Notes</p>
+        </tr>
+        <tr class="lang-row">
+            <td>Notes</td>
             {% if reflex.notes %}
-            <div>{{ reflex.notes | markdown | safe }}</div>
+            <td>{{ reflex.notes | markdown | safe }}</td>
             {% else %}
-            <p class="muted">&mdash;</p>
+            <td class="muted">&mdash;</td>
             {% endif %}
-        </div>
-        <div class="grid-row">
-            <p>References</p>
+        </tr>
+        <tr class="lang-row">
+            <td>References</td>
             {% if reflex.references %}
-            <p>{{ reflex.references | join(', ') | safe }}</p>
+            <td>{{ reflex.references | join(', ') | safe }}</td>
             {% else %}
-            <p class="muted">&mdash;</p>
+            <td class="muted">&mdash;</td>
             {% endif %}
-        </div>
-    </div>
+        </tr>
+    </table>
     <div style="width: 25%;"></div>
     <div style="width: 25%;">
         <div class="rounded shadow" style="width: 100%; height: 300px;" id="map">

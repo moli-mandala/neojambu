@@ -11,19 +11,19 @@
 <div style="width: 33%;">
     <h2>{{ lang1.name }}</h2>
     <div class="grid" style="margin-top: 0;">
-        <div class="grid-row">
+        <div class="lang-row">
             <p>Family</p>
             <p>{{ lang1.clade }}</p>
         </div>
-        <div class="grid-row">
+        <div class="lang-row">
             <p>Glottolog</p>
             <p><a href="https://glottolog.org/resource/languoid/id/{{ lang1.glottocode }}">{{ lang1.glottocode }}</a></p>
         </div>
-        <div class="grid-row">
+        <div class="lang-row">
             <p>Coordinates</p>
             <p>{{ lang1.lat }}, {{ lang1.long }}</p>
         </div>
-        <div class="grid-row">
+        <div class="lang-row">
             <p>Reflexes</p>
             <p>{{ lang1.lemma_count }} <span class="muted">({{ '%.2f' % ((count / lang1.lemma_count) * 100) }}%)</span></p>
         </div>
@@ -32,19 +32,19 @@
 <div style="width: 33%;">
     <h2>{{ lang2.name }}</h2>
     <div class="grid" style="margin-top: 0;">
-        <div class="grid-row">
+        <div class="lang-row">
             <p>Family</p>
             <p>{{ lang2.clade }}</p>
         </div>
-        <div class="grid-row">
+        <div class="lang-row">
             <p>Glottolog</p>
             <p><a href="https://glottolog.org/resource/languoid/id/{{ lang2.glottocode }}">{{ lang2.glottocode }}</a></p>
         </div>
-        <div class="grid-row">
+        <div class="lang-row">
             <p>Coordinates</p>
             <p>{{ lang2.lat }}, {{ lang2.long }}</p>
         </div>
-        <div class="grid-row">
+        <div class="lang-row">
             <p>Reflexes</p>
             <p>{{ lang2.lemma_count }} <span class="muted">({{ '%.2f' % ((count / lang2.lemma_count) * 100) }}%)</span></p>
         </div>
@@ -55,7 +55,7 @@
 <div class="mt-5">
     <div class="grid">
         {% for key in both %}
-        <div class="grid-row">
+        <div class="lang-row">
             <p><a href="/entries/{{ key }}">{{ lang_dict[key][0].origin_lemma.word }} <span class="font-thin">[{{ key }}]</a></p>
             <div>
                 {% for entry in lang_dict[key] %}

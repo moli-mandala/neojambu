@@ -1,8 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const classes = ['lang', 'origin-lang', 'entry-name', 'source', 'gloss', 'word', 'origin', 'clade', 'notes'];
-
+    var origUrl = `{{ request.url }}`
+    var results = document.querySelector('.results');
+    // create node
+    var loader = document.createElement("tr");
+    var temp = $('<div/>');
+    loader.classList.add("loader-line");
     const filterEntries = (obj) => {
-        const url = new URL(`{{ request.url }}`, window.location.href);
+        // add loading spinner to start of results
+        results.prepend(loader);
+        const url = new URL(origUrl, window.location.href);
         for (key in obj) {
             url.searchParams.set(key, obj[key]);
         }
@@ -10,7 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
             url.searchParams.delete('page');
         }
         console.log(url)
-        window.location.href = url;
+        window.history.pushState({}, null, url);
+
+        temp.load(url + ' .results, .showing', function () {
+            $('.results').html($('.results > *', temp));
+            $('.showing').html($('.showing', temp));
+            origUrl = url;
+        });
     }
 
     for (let i = 0; i < classes.length; i++) {

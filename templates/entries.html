@@ -1,10 +1,10 @@
 {% include "head.html" %}
 <h1 class="text-4xl font-semibold">Entries</h1>
-<p clas="muted">Showing {{ entries | length }} of {{ count }} entries.</p>
+<p class="muted showing">Showing {{ entries | length }} of {{ count }} entries.</p>
 <div class="mt-8">
     <table>
         <thead>
-            <tr class="grid-row">
+            <tr class="lang-row">
                 <th>
                     <select class="search-box lang-filter" name="lang">
                         <option value="">Language</option>
@@ -23,31 +23,33 @@
                 <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
             </tr>
         </thead>
-        {% for entry in entries %}
-        <tr class="grid-row" style="border-color: #{{ entry.language.color }};">
-            <td>
-                <p>{{ entry.language.name }}</p>
-                <div>
-                    {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if entry.clades %}{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}{% endif %}></div>{% endfor %}
-                </div>
-            </td>
-            <td><a href="/entries/{{ entry.id }}">{{ entry.word }} <span class="font-thin">[{{ entry.id }}]</span></a></td>
-            <td class="muted">
-                {% if entry.gloss %}
-                {{ entry.gloss | safe}}
-                {% else %}
-                <span>&mdash;</span>
-                {% endif %}
-            </td>
-            <td class="muted">
-                {% if entry.reference %}
-                {{ entry.references | join(', ') | safe}}
-                {% else %}
-                <span>&mdash;</span>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
+        <tbody class="results">
+            {% for entry in entries %}
+            <tr class="lang-row">
+                <td class="lang-cell" style="border-left-color: #{{ entry.language.color }};">
+                    <p>{{ entry.language.name }}</p>
+                    <div class="clades-inline">
+                        {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if entry.clades %}{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}{% endif %}></div>{% endfor %}
+                    </div>
+                </td>
+                <td><a href="/entries/{{ entry.id }}">{{ entry.word }} <span class="font-thin">[{{ entry.id }}]</span></a></td>
+                <td class="muted">
+                    {% if entry.gloss %}
+                    {{ entry.gloss | safe}}
+                    {% else %}
+                    <span>&mdash;</span>
+                    {% endif %}
+                </td>
+                <td class="muted">
+                    {% if entry.reference %}
+                    {{ entry.references | join(', ') | safe}}
+                    {% else %}
+                    <span>&mdash;</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
     {% if page %}
     <div style="width: 100%; text-align: center; margin: 2em 0em;">

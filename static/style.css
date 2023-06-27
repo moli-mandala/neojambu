@@ -90,78 +90,57 @@ a:hover {
 }
 
 /* tables */
-.grid {
-    display: grid;
-    width: 100%;
-    margin-top: 1.25rem;
+table {
+    border-spacing: 0;
 }
 
-.grid-group {
-    border-radius: 0.25rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
-    border-width: 0;
-    border-left-width: 4px;
-    border-left-style: solid;
-    border-left-color: rgba(0, 0, 0, 0);
-    display: grid;
+tbody {
+    border-collapse: collapse;
+}
+
+table > div {
+    display: table-row-group;
+}
+
+td, th {
+    vertical-align: top;
     padding: 0.25rem;
-}
-
-.grid-group-row {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0rem;
-    margin-bottom: 0rem;
-    border-width: 0;
-    display: flex;
-    position: relative;
-    width: 100%;
-}
-
-.grid-group-row > * {
-    padding: 0rem 0.25rem;
-    flex: 1 1 0px;
-}
-
-.grid-group-row p {
     margin: 0;
 }
 
-.grid-row {
-    border-radius: 0.25rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0.25rem;
-    margin-bottom: 0.25rem;
-    border-width: 0;
-    border-left-width: 4px;
+td > p {
+    margin: 0;
+}
+
+.lang-cell {
+    border-left-width: 4px !important;
     border-left-style: solid;
     border-left-color: rgba(0, 0, 0, 0);
-    display: flex;
-    position: relative;
-}
-
-.grid-row:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    background-color: #F9FAFB;
-}
-
-.grid-row > * {
-    padding: 0.25rem;
-    flex: 1 1 0px;
-}
-
-.grid-row > *:first-child {
     padding-left: 0.5rem;
+    border-top-left-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem;
 }
 
-.grid-row p {
-    margin: 0;
+.lang-row td, .lang-row th {
+    border: 0.5px solid #ddd;
+    background-color: #f7f7f7;
+}
+
+.lang-row th {
+    background-color: white;
+}
+
+table tr:first-child th {
+    border: 0.5px solid #ddd;
+    font-size: large;
+}
+
+table .lang-row:first-child  th:first-child {
+    border-top-left-radius: 0.25rem;
+}
+
+table .lang-row:first-child  th:last-child {
+    border-top-right-radius: 0.25rem;
 }
 
 .description {
@@ -184,6 +163,10 @@ a:hover {
     line-height: 1.25rem;
     margin: 0;
     padding: 0;
+}
+
+.clades-inline {
+    white-space: nowrap;
 }
 
 .lang-box {
@@ -240,11 +223,10 @@ th {
 table input, table select {
     padding: 0.5rem;
     margin: 0;
-    font-size: large;
     border: 2px solid #E5E7EB;
     background-color: #F3F4F6;
     border-radius: 0.25rem;
-    width: 50%;
+    width: auto;
 }
 
 .tooltip p {
@@ -275,4 +257,44 @@ table input, table select {
 
 .sort button {
     height: 15px;
+}
+
+.loader-line {
+    width: 100%;
+    height: 3px;
+    position: relative;
+    overflow: hidden;
+    background-color: white;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+.loader-line:before {
+    content: "";
+    position: absolute;
+    left: -50%;
+    height: 3px;
+    width: 40%;
+    background-color: #991B1B;
+    -webkit-animation: lineAnim 0.5s linear infinite;
+    -moz-animation: lineAnim 0.5s linear infinite;
+    animation: lineAnim 0.5s linear infinite;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+}
+
+@keyframes lineAnim {
+    0% {
+        left: -40%;
+    }
+    50% {
+        left: 20%;
+        width: 80%;
+    }
+    100% {
+        left: 100%;
+        width: 100%;
+    }
 }

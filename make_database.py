@@ -129,6 +129,11 @@ def main():
         lines = f.readlines()
         reader = csv.DictReader(lines)
         for row in tqdm(reader, total=len(lines)):
+            marker = ""
+            if row["Clade"] in ["MIA", "OIA"] or "Old" in row["Name"] or "Proto" in row["Name"]:
+                marker = f"""<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><polygon points="0,15 15,0 30,15 15,30" fill="#{colors[row['Clade']]}" stroke="black" stroke-width="2"/></svg>"""
+            else:
+                marker = f"""<svg viewBox="-2 -2 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="14" r="13" fill="#{colors[row['Clade']]}" stroke="black" stroke-width="2"/></svg>"""
             language = Language(
                 id=row["ID"],
                 name=row["Name"],
@@ -138,6 +143,7 @@ def main():
                 clade=row["Clade"],
                 color=colors[row["Clade"]],
                 order=order.index(row["Clade"]),
+                map_marker=marker,
             )
             clades[row["ID"]] = row["Clade"]
             langs[row["ID"]] = language
@@ -225,3 +231,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
