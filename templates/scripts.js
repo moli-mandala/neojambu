@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const classes = ['lang', 'origin-lang', 'entry-name', 'source', 'gloss', 'word', 'origin', 'clade', 'notes'];
+    const classes = ['lang', 'origin-lang', 'entry-name', 'source', 'gloss', 'word', 'origin', 'clade', 'notes', 'reflexes'];
     var origUrl = `{{ request.url }}`
     var results = document.querySelector('.results');
     // create node
@@ -67,6 +67,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 obj = {};
                 obj[`${className}`] = event.target.value;
                 filterEntries(obj);
+            });
+        });
+
+
+        const asc = document.querySelectorAll(`.${classes[i]}-asc`);
+        asc.forEach(filter => {
+            filter.addEventListener('click', event => {
+                className = classes[i].replace('-', '_');
+                obj = {};
+                obj['sort'] = event.target.classList.contains('arrow-active') ? '' : `asc-${className}`;
+                filterEntries(obj);
+                $('.arrow-active').removeClass('arrow-active');
+                if (obj['sort'] !== '') {
+                    event.target.classList.add('arrow-active');
+                }
+            });
+        });
+
+
+        const desc = document.querySelectorAll(`.${classes[i]}-desc`);
+        desc.forEach(filter => {
+            filter.addEventListener('click', event => {
+                className = classes[i].replace('-', '_');
+                obj = {};
+                obj['sort'] = event.target.classList.contains('arrow-active') ? '' : `desc-${className}`;
+                filterEntries(obj);
+                $('.arrow-active').removeClass('arrow-active');
+                if (obj['sort'] !== '') {
+                    event.target.classList.add('arrow-active');
+                }
             });
         });
     }

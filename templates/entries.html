@@ -16,11 +16,26 @@
                         <option value="Arabic" {% if request.args.get('lang') == 'Arabic' %}selected{% endif %}>Arabic</option>
                         <option value="English" {% if request.args.get('lang') == 'English' %}selected{% endif %}>English</option>
                         <option value="Persian" {% if request.args.get('lang') == 'Persian' %}selected{% endif %}>Persian</option>
+                        <option value="Proto-Turkic" {% if request.args.get('origin_lang') == 'Proto-Turkic' %}selected{% endif %}>Turkic</option>
                     </select>
+                    <span class="arrow-up lang-asc"></span>
+                    <span class="arrow-down lang-desc"></span>
                 </th>
-                <th><input type="text" class="search-box word-filter" placeholder="Entry" value="{{ request.args.get('word', '') }}"></th>
-                <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
-                <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
+                <th>
+                    <input type="text" class="search-box word-filter" placeholder="Entry" value="{{ request.args.get('word', '') }}">
+                    <span class="arrow-up word-asc"></span>
+                    <span class="arrow-down word-desc"></span>
+                </th>
+                <th>
+                    <input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}">
+                    <span class="arrow-up gloss-asc"></span>
+                    <span class="arrow-down gloss-desc"></span>
+                </th>
+                <th>
+                    <input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}">
+                    <span class="arrow-up source-asc"></span>
+                    <span class="arrow-down source-desc"></span>
+                </th>
             </tr>
         </thead>
         <tbody class="results">

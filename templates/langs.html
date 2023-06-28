@@ -14,10 +14,24 @@
 <table>
     <thead>
         <tr class="lang-row">
-            <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
-            <th><input type="text" class="search-box clade-filter" placeholder="Clade" value="{{ request.args.get('clade', '') }}"></th>
-            <th><input type="text" class="search-box" placeholder="Coordinates" readonly></th>
-            <th><input type="text" class="search-box" placeholder="Reflexes" readonly></th>
+            <th>
+                <input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}">
+                <span class="arrow-up lang-asc"></span>
+                <span class="arrow-down lang-desc"></span>
+            </th>
+            <th>
+                <input type="text" class="search-box clade-filter" placeholder="Clade" value="{{ request.args.get('clade', '') }}">
+                <span class="arrow-up clade-asc"></span>
+                <span class="arrow-down clade-desc"></span>
+            </th>
+            <th>
+                <input type="text" class="search-box" placeholder="Coordinates" readonly>
+            </th>
+            <th>
+                <input type="text" class="search-box" placeholder="Reflexes" readonly>
+                <span class="arrow-up reflexes-asc"></span>
+                <span class="arrow-down reflexes-desc"></span>
+            </th>
         </tr>
     </thead>
     <tbody class="results">
@@ -31,7 +45,7 @@
             {{ lang.lat }}, {{ lang.long }}
         </td>
         <td>
-            {{ lang.lemma_count }} reflexes
+            {{ lang.lemma_count }}
         </td>
     </tr>
     {% endfor %}

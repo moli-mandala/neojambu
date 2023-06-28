@@ -46,7 +46,7 @@ def query():
 
     # list of reflexes
     if query_type == "reflexes":
-        lemmas = filter_data(session.query(Lemma).join(Language), request, Lemma)
+        lemmas, sort = filter_data(session.query(Lemma).join(Language), request, Lemma)
         lemmas = lemmas.order_by(Lemma.order, Language.clade, Language.name)
         lemmas = filter_page(lemmas, request)
         return serialise(lemmas)
@@ -61,7 +61,7 @@ def query():
             .options(joinedload(Lemma.origin_lemma))
             .join(Language)
         )
-        lemmas = filter_data(lemmas, request, Lemma)
+        lemmas, sort = filter_data(lemmas, request, Lemma)
         lemmas = lemmas.join(Lemma.origin_lemma, aliased=True).order_by(Lemma.order)
         lemmas = filter_page(lemmas, request)
 
@@ -73,7 +73,7 @@ def query():
     # all languages
     if query_type == "languages":
         langs = session.query(Language).order_by(Language.order, Language.name)
-        langs = filter_data(langs, request, Language)
+        langs, sort = filter_data(langs, request, Language)
         return serialise(langs)
 
     # a single entry's reflexes
@@ -84,7 +84,7 @@ def query():
             .filter_by(origin_lemma_id=entry)
             .options(joinedload(Lemma.language), joinedload(Lemma.references))
         )
-        reflexes = filter_data(reflexes, request, Lemma)
+        reflexes, sort = filter_data(reflexes, request, Lemma)
         result = serialise(reflexes)
         for i in range(len(result)):
             result[i]["language"] = serialise(result[i]["language"])
@@ -98,7 +98,7 @@ def query():
             .filter(Lemma.origin_lemma_id == None)
             .order_by(Lemma.order)
         )
-        entries = filter_data(entries.join(Language), request, Lemma)
+        entries, sort = filter_data(entries.join(Language), request, Lemma)
         entries = filter_page(entries, request)
         return serialise(entries)
 
@@ -111,7 +111,7 @@ def query():
     # all refs
     if query_type == "references":
         sources = session.query(Reference)
-        sources = filter_data(sources, request, Reference)
+        sources, sort = filter_data(sources, request, Reference)
         return serialise(sources)
 
 
@@ -127,8 +127,9 @@ def reflexes(reflex=None):
             )
         return "Lemma not found"
     else:
-        lemmas = filter_data(session.query(Lemma).join(Language), request, Lemma)
-        lemmas = lemmas.order_by(Lemma.order, Language.clade, Language.name)
+        lemmas, sort = filter_data(session.query(Lemma).join(Language), request, Lemma)
+        if sort:
+            lemmas = lemmas.order_by(Lemma.order, Language.clade, Language.name)
         return render_template(
             "reflexes.html",
             reflexes=lemmas.limit(50).offset(page * 50 - 50).all(),
@@ -206,15 +207,16 @@ def languages(lang1=None, lang2=None):
                 .filter_by(language_id=lang1)
                 .options(joinedload(Lemma.origin_lemma))
             )
-            lemmas = filter_data(lemmas.join(Language), request, Lemma)
-            lemmas = lemmas.join(Lemma.origin_lemma, aliased=True).order_by(Lemma.order)
+            lemmas, sort = filter_data(lemmas.join(Language), request, Lemma)
+            if sort:
+                lemmas = lemmas.order_by(Lemma.order)
 
             return render_template(
                 "reflexes.html",
                 lang=language,
                 colors=colors,
                 count=lemmas.count(),
-                reflexes=lemmas.order_by(Lemma.origin_lemma_id)
+                reflexes=lemmas
                 .limit(50)
                 .offset(page * 50 - 50)
                 .all(),
@@ -228,8 +230,10 @@ def languages(lang1=None, lang2=None):
         return "Wut did you do"
 
     else:
-        langs = session.query(Language).order_by(Language.order, Language.name)
-        langs = filter_data(langs, request, Language)
+        langs = session.query(Language)
+        langs, sort = filter_data(langs, request, Language)
+        if sort:
+            langs = langs.order_by(Language.order, Language.name)
         return render_template(
             "langs.html",
             langs=langs.all(),
@@ -246,27 +250,32 @@ def entries(entry=None, lang=None):
     if entry:
         entry_info = session.query(Lemma).filter_by(id=entry).first()
         if entry_info:
-            reflexes_query = filter_data(
+            reflexes_query, sort = filter_data(
                 session.query(Lemma).filter_by(origin_lemma_id=entry).join(Language),
                 request,
                 Lemma,
             )
 
             # group reflexes by cognate set first (i.e. subgroup)
-            reflexes_cognatesets = reflexes_query.order_by(Lemma.cognateset).all()
+            if sort:
+                reflexes_cognatesets = reflexes_query.order_by(Lemma.cognateset).all()
+            else:
+                reflexes_cognatesets = reflexes_query.all()
             grouped_cognatesets = [
                 [key, list(group)]
                 for key, group in groupby(
-                    reflexes_cognatesets, key=lambda lemma: lemma.cognateset
+                    reflexes_cognatesets, key=lambda lemma: lemma.cognateset if sort else None
                 )
             ]
-            grouped_cognatesets.sort(key=lambda x: x[1][0].id)
+            if sort:
+                grouped_cognatesets.sort(key=lambda x: x[1][0].id)
 
             # subgroup each cognateset by language
             for i in range(len(grouped_cognatesets)):
-                grouped_cognatesets[i][1].sort(
-                    key=lambda x: (x.language.order, x.language.name)
-                )
+                if sort:
+                    grouped_cognatesets[i][1].sort(
+                        key=lambda x: (x.language.order, x.language.name)
+                    )
                 grouped_cognatesets[i][1] = [
                     (key, list(group))
                     for key, group in groupby(
@@ -300,9 +309,10 @@ def entries(entry=None, lang=None):
         entries_query = (
             session.query(Lemma)
             .filter(Lemma.origin_lemma_id == None)
-            .order_by(Lemma.order)
         )
-        entries = filter_data(entries_query.join(Language), request, Lemma)
+        entries, sort = filter_data(entries_query.join(Language), request, Lemma)
+        if sort:
+            entries = entries.order_by(Lemma.order)
         return render_template(
             "entries.html",
             entries=entries.limit(50).offset(page * 50 - 50).all(),

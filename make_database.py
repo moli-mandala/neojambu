@@ -150,8 +150,9 @@ def main():
             session.add(language)
 
     # parameters
+    lemma_cts = defaultdict(int)
     params = {}
-    i = 0
+    ordering = 0
     with open("../data/cldf/parameters.csv", "r") as f:
         lines = f.readlines()
         reader = csv.DictReader(lines)
@@ -163,14 +164,18 @@ def main():
                 gloss=row["Description"],
                 language_id=row["Language_ID"],
                 notes=row["Etyma"],
-                order=i,
+                order=ordering * 1000,
             )
+            ordering += 1
             params[iden] = parameter
             session.add(parameter)
 
+            # language ct
+            lemma_cts[row["Language_ID"]] += 1
+
     # lemmata
-    lemma_cts = defaultdict(int)
     param_clades = defaultdict(set)
+    param_cts = defaultdict(int)
     with open("../data/cldf/forms.csv", "r") as f:
         lines = f.readlines()
         reader = csv.DictReader(lines)
@@ -185,6 +190,7 @@ def main():
                 relation = "s"
 
             # make lemma
+            param_cts[row["Parameter_ID"]] += 1
             lemma = Lemma(
                 id=row["ID"],
                 word=row["Form"],
@@ -197,7 +203,7 @@ def main():
                 origin_lemma_id=row["Parameter_ID"],
                 cognateset=row["Cognateset"],
                 relation=relation,
-                order=i,
+                order=params[row["Parameter_ID"]].order + param_cts[row["Parameter_ID"]],
             )
 
             # language ct

@@ -7,14 +7,21 @@ Date: 2023-05-19
 
 from models import Language, Lemma, Concept, Reference
 
-sort = {
+joins = {
+    "source": lambda x: x.join(Lemma.references),
+    "origin_lang": lambda x: x.outerjoin(Lemma.origin_lemma, aliased=True),
+    "origin": lambda x: x.outerjoin(Lemma.origin_lemma, aliased=True),
+}
+
+sorts = {
     "lang": Language.name,
     "word": Lemma.word,
     "gloss": Lemma.gloss,
     "notes": Lemma.notes,
     "source": Reference.short,
-    "origin": Lemma.word,
+    "origin": Lemma.order,
     "clade": Language.clade,
+    "reflexes": Language.lemma_count
 }
 
 filters = {
@@ -22,16 +29,11 @@ filters = {
     "word": lambda x, y, z: x.filter(Lemma.word.like("%" + y + "%")),
     "gloss": lambda x, y, z: x.filter(Lemma.gloss.like("%" + y + "%")),
     "notes": lambda x, y, z: x.filter(Lemma.notes.like("%" + y + "%")),
-    "source": lambda x, y, z: x.join(Lemma.references).filter(
-        Reference.short.like("%" + y + "%")
-    ),
-    "origin_lang": lambda x, y, z: x.join(Lemma.origin_lemma, aliased=True).filter(
-        Lemma.language_id == y
-    ),
-    "origin": lambda x, y, z: x.join(Lemma.origin_lemma, aliased=True).filter(
-        Lemma.word.like("%" + y + "%")
-    ),
+    "source": lambda x, y, z: x.filter(Reference.short.like("%" + y + "%")),
+    "origin_lang": lambda x, y, z: x.filter(Lemma.language_id == y),
+    "origin": lambda x, y, z: x.filter(Lemma.word.like("%" + y + "%")),
     "clade": lambda x, y, z: x.filter(Language.clade.like("%" + y + "%")),
+    "reflexes": lambda x, y, z: x
 }
 
 
@@ -40,20 +42,22 @@ def filter_data(query, request, model):
     order, col = None, None
     s = request.args.get("sort", None)
     if s:
-        order, col = s.split("_")
+        order, col = s.split("-")
 
     # filter
     for i in filters:
         r = request.args.get(i, None)
+        if (r or (col == i and col in sorts)) and i in joins:
+            query = joins[i](query)
         if r:
             query = filters[i](query, r, model)
-        if col == i and col in sort:
+        if col == i and col in sorts:
             if order == "asc":
-                query = query.order_by(sort[col])
+                query = query.order_by(sorts[col])
             elif order == "desc":
-                query = query.order_by(sort[col].desc())
-
-    return query
+                query = query.order_by(sorts[col].desc())
+    print(query)
+    return query, s is None or s == ""
 
 
 def filter_page(query, request):

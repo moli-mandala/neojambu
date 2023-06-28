@@ -23,11 +23,31 @@
 <table>
     <thead>
         <tr class="lang-row">
-            <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
-            <th><input type="text" class="search-box word-filter" placeholder="Word" value="{{ request.args.get('word', '') }}"></th>
-            <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
-            <th><input type="text" class="search-box notes-filter" placeholder="Notes" value="{{ request.args.get('notes', '') }}"></th>
-            <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
+            <th>
+                <input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}">
+                <span class="arrow-up lang-asc"></span>
+                <span class="arrow-down lang-desc"></span>
+            </th>
+            <th>
+                <input type="text" class="search-box word-filter" placeholder="Word" value="{{ request.args.get('word', '') }}">
+                <span class="arrow-up word-asc"></span>
+                <span class="arrow-down word-desc"></span>
+            </th>
+            <th>
+                <input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}">
+                <span class="arrow-up gloss-asc"></span>
+                <span class="arrow-down gloss-desc"></span>
+            </th>
+            <th>
+                <input type="text" class="search-box notes-filter" placeholder="Notes" value="{{ request.args.get('notes', '') }}">
+                <span class="arrow-up notes-asc"></span>
+                <span class="arrow-down notes-desc"></span>
+            </th>
+            <th>
+                <input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}">
+                <span class="arrow-up source-asc"></span>
+                <span class="arrow-down source-desc"></span>
+            </th>
         </tr>
     </thead>
     <tbody class="results">
@@ -42,7 +62,7 @@
             {% endif %}
         </h2></td>
     </tr>
-    {% else %}
+    {% elif loop.index != 1 %}
     <tr>
         <td colspan=5><h2 class="font-thin">Unclassified</h2></td>
     </tr>

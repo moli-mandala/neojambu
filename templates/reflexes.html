@@ -36,7 +36,11 @@
         <thead>
             <tr class="lang-row">
                 {% if not lang %}
-                <th><input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}"></th>
+                <th>
+                    <input type="text" class="search-box lang-filter" placeholder="Language" value="{{ request.args.get('lang', '') }}">
+                    <span class="arrow-up lang-asc"></span>
+                    <span class="arrow-down lang-desc"></span>
+                </th>
                 {% endif %}
                 <th>
                     <select class="search-box origin-lang-filter" name="origin-lang">
@@ -49,14 +53,37 @@
                         <option value="Ar" {% if request.args.get('origin_lang') == 'Ar' %}selected{% endif %}>Arabic</option>
                         <option value="Eng" {% if request.args.get('origin_lang') == 'Eng' %}selected{% endif %}>English</option>
                         <option value="Pers" {% if request.args.get('origin_lang') == 'Pers' %}selected{% endif %}>Persian</option>
+                        <option value="Turk" {% if request.args.get('origin_lang') == 'Turk' %}selected{% endif %}>Turkic</option>
                     </select>
+                    <span class="arrow-up origin-lang-asc"></span>
+                    <span class="arrow-down origin-lang-desc"></span>
                 </th>
-                <th><input type="text" class="search-box word-filter" placeholder="Word" value="{{ request.args.get('word', '') }}"></th>
-                <th><input type="text" class="search-box origin-filter" placeholder="Origin" value="{{ request.args.get('origin', '') }}"></th>
-                <th><input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}"></th>
-                <th><input type="text" class="search-box notes-filter" placeholder="Notes" value="{{ request.args.get('notes', '') }}"></th>
+                <th>
+                    <input type="text" class="search-box word-filter" placeholder="Word" value="{{ request.args.get('word', '') }}">
+                    <span class="arrow-up word-asc"></span>
+                    <span class="arrow-down word-desc"></span>
+                </th>
+                <th>
+                    <input type="text" class="search-box origin-filter" placeholder="Origin" value="{{ request.args.get('origin', '') }}">
+                    <span class="arrow-up origin-asc"></span>
+                    <span class="arrow-down origin-desc"></span>
+                </th>
+                <th>
+                    <input type="text" class="search-box gloss-filter" placeholder="Gloss" value="{{ request.args.get('gloss', '') }}">
+                    <span class="arrow-up gloss-asc"></span>
+                    <span class="arrow-down gloss-desc"></span>
+                </th>
+                <th>
+                    <input type="text" class="search-box notes-filter" placeholder="Notes" value="{{ request.args.get('notes', '') }}">
+                    <span class="arrow-up notes-asc"></span>
+                    <span class="arrow-down notes-desc"></span>
+                </th>
                 {% if lang %}
-                <th><input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}"></th>
+                <th>
+                    <input type="text" class="search-box source-filter" placeholder="Source" value="{{ request.args.get('source', '') }}">
+                    <span class="arrow-up source-asc"></span>
+                    <span class="arrow-down source-desc"></span>
+                </th>
                 {% endif %}
             </tr>
         </thead>
