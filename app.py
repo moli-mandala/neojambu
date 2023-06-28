@@ -250,11 +250,14 @@ def entries(entry=None, lang=None):
     if entry:
         entry_info = session.query(Lemma).filter_by(id=entry).first()
         if entry_info:
+            reflexes_query = session.query(Lemma).filter_by(origin_lemma_id=entry).join(Language)
+            total_count = reflexes_query.count()
             reflexes_query, sort = filter_data(
-                session.query(Lemma).filter_by(origin_lemma_id=entry).join(Language),
+                reflexes_query,
                 request,
                 Lemma,
             )
+            count = reflexes_query.count()
 
             # group reflexes by cognate set first (i.e. subgroup)
             if sort:
@@ -302,6 +305,8 @@ def entries(entry=None, lang=None):
                 colors=colors,
                 order=order,
                 title=f"Entry {entry_info.word}",
+                count=count,
+                total_count=total_count,
             )
         else:
             return "Entry not found"

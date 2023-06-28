@@ -30,7 +30,7 @@
     </div>
 </div>
 {% endif %}
-<p class="muted showing">Showing {{ reflexes | length }} of {{ count }} reflexes.</p>
+<p class="muted showing">Showing {{ (page - 1) * 50 + 1}}&mdash;{{(page - 1) * 50 + reflexes | length }} of {{ count }} reflexes.</p>
 <div class="mt-5">
     <table>
         <thead>

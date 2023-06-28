@@ -1,6 +1,6 @@
 {% include "head.html" %}
 <h1 class="text-4xl font-semibold">Entries</h1>
-<p class="muted showing">Showing {{ entries | length }} of {{ count }} entries.</p>
+<p class="muted showing">Showing {{ (page - 1) * 50 + 1}}&mdash;{{(page - 1) * 50 + entries | length }} of {{ count }} entries.</p>
 <div class="mt-8">
     <table>
         <thead>
