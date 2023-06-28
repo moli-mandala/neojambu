@@ -19,9 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(url)
         window.history.pushState({}, null, url);
 
-        temp.load(url + ' .results, .showing', function () {
+        temp.load(url + ' .results, .showing, .page', function () {
             $('.results').html($('.results > *', temp));
+            $('.page').html($('.page > *', temp));
             $('.showing').html($('.showing', temp));
+            // page navigation
+            const pageNav = document.querySelectorAll('.page-nav');
+            pageNav.forEach(nav => {
+                nav.addEventListener('click', event => {
+                    filterEntries({ page: event.target.dataset.page });
+                });
+            });
             origUrl = url;
         });
     }
