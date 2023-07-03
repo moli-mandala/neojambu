@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     const classes = ['lang', 'origin-lang', 'entry-name', 'source', 'gloss', 'word', 'origin', 'clade', 'notes', 'reflexes'];
-    const special_chars = ['ṭ', 'ḍ', 'ṣ', 'ṛ', 'r̩', 'ṁ', 'ʰ'];
+    const special_chars = ['ṭ', 'ḍ', 'ṣ', 'ṛ', 'r̩', 'r̆', 'ṁ', 'ʰ'];
     var pal = document.createElement("div");
     pal.classList.add("palette");
     pal.classList.add("hidden");
-    special_chars.forEach(char => {
+    special_chars.forEach((char, idx) => {
         var span = document.createElement("span");
         span.textContent = char;
         pal.appendChild(span);

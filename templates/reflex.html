@@ -10,7 +10,7 @@
         </tr>
         <tr class="lang-row">
             <td>Reflex</td>
-            <td>{{ reflex.word }}</td>
+            <td>{{ reflex.word | safe }}</td>
         </tr>
         <tr class="lang-row">
             <td>Language</td>
@@ -19,7 +19,7 @@
         <tr class="lang-row">
             <td>Entry</td>
             {% if reflex.origin_lemma %}
-            <td><a href="/entries/{{reflex.origin_lemma_id}}">{{ reflex.origin_lemma.word }} <span class="font-thin">[{{ reflex.origin_lemma_id }}]</span></a></td>
+            <td><a href="/entries/{{reflex.origin_lemma_id}}">{{ reflex.origin_lemma.word | safe }} <span class="font-thin">[{{ reflex.origin_lemma_id }}]</span></a></td>
             {% else %}
             <td class="muted">&mdash;</td>
             {% endif %}

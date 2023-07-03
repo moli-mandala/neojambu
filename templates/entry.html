@@ -1,6 +1,6 @@
 {% include "head.html" %}
 <h1 class="text-4xl font-semibold">
-    <a href="/languages/{{ entry.language.id }}" class="font-light">{{ entry.language.name }}</a> {{ entry.word }} <span class="muted font-thin">[{{ entry.id }}]</span>
+    <a href="/languages/{{ entry.language.id }}" class="font-light">{{ entry.language.name }}</a> {{ entry.word | safe }} <span class="muted font-thin">[{{ entry.id }}]</span>
 </h1>
 <div class="description">
     <p>{{ entry.gloss | safe }}</p>
@@ -82,7 +82,7 @@
         {% else %}
         {% endif %}
         <td>
-            <p><a href="/reflexes/{{ reflex.id }}">{{ reflex.word }}</a>{% if reflex.phonemic %} <span class="muted">/&#8288;{{ reflex.phonemic }}&#8288;/</span>{% endif %}</p>
+            <p><a href="/reflexes/{{ reflex.id }}">{{ reflex.word | safe }}</a>{% if reflex.phonemic %} <span class="muted">/&#8288;{{ reflex.phonemic }}&#8288;/</span>{% endif %}</p>
         </td>
         <td class="muted">
             <p>{% if reflex.gloss %} {{ reflex.gloss | safe}}{% endif %}</p>
@@ -114,7 +114,7 @@ var icon = L.icon( {
             iconSize: [15, 15]
         } );
 var marker = L.marker([{{ lang.lat }}, {{ lang.long }}], {icon: icon})
-marker.bindTooltip("{% for reflex in reflexes %}{% if loop.index != 1 %}, {% endif %}{{ reflex.word | striptags }}{% endfor %}")
+marker.bindTooltip("{% for reflex in reflexes %}{% if loop.index != 1 %}, {% endif %}{{ reflex.word | safe }}{% endfor %}")
 marker.bindPopup(`<h2>{{ lang.name }}</h2><ul>{% for reflex in reflexes %}<li><a href="/reflexes/{{reflex.id}}">{{ reflex.word | striptags }}</a></li>{% endfor %}</ul>`)
 marker.addTo(map)
 {% endfor %}

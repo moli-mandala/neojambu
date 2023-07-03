@@ -51,7 +51,7 @@
                         {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if entry.clades %}{% set clades = entry.clades.split(',') %}{% if clade in clades %}style="background-color: #{{ colors[clade] }};"{% endif %}{% endif %}></div>{% endfor %}
                     </div>
                 </td>
-                <td><a href="/entries/{{ entry.id }}">{{ entry.word }} <span class="font-thin">[{{ entry.id }}]</span></a></td>
+                <td><a href="/entries/{{ entry.id }}">{{ entry.word | safe }} <span class="font-thin">[{{ entry.id }}]</span></a></td>
                 <td class="muted">
                     {% if entry.gloss %}
                     {{ entry.gloss | safe}}

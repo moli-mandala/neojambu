@@ -116,14 +116,14 @@
             </td>
             {% endif %}
             <td>
-                <p><a href="/reflexes/{{ word.id }}">{{ word.word }}</a>{% if word.phonemic %} <span class="muted">/&#8288;{{ word.phonemic }}&#8288;/</span>{% endif %}</p>
+                <p><a href="/reflexes/{{ word.id }}">{{ word.word | safe }}</a>{% if word.phonemic %} <span class="muted">/&#8288;{{ word.phonemic }}&#8288;/</span>{% endif %}</p>
             </td>
             <td>
                 {% if word.origin_lemma %}
                 <p>
                     <a href="/entries/{{ word.origin_lemma.id }}">
                         {% if word.origin_lemma.word %}
-                        {{ word.origin_lemma.word }} 
+                        {{ word.origin_lemma.word | safe }} 
                         {% endif %}
                         <small class="font-thin">[{{ word.origin_lemma_id }}]</small>
                     </a>
