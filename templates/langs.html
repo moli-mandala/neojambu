@@ -37,7 +37,13 @@
     <tbody class="results">
     {% for lang in langs %}
     <tr class="lang-row">
-        <td class="lang-cell" style="border-left-color: #{{ lang.color }};"><a href="/languages/{{ lang.id }}">{{ lang.name }}</a> <span class="font-thin">[{{ lang.id }}]</span></td>
+        <td class="lang-cell" style="border-left-color: #{{ lang.color }};">
+            {% if lang.dialect == "" %}
+            <p><a href="/languages/{{ lang.id }}">{{ lang.language }}</span></a> <span class="font-thin">[{{ lang.id }}]</span></p>
+            {% else %}
+            <p><a href="/languages/{{ lang.id }}">{{ lang.language }}: <span class="font-thin">{{ lang.dialect }}</span></a> <span class="font-thin">[{{ lang.id }}]</span></p>
+            {% endif %}
+        </td>
         <td>
             {{ lang.clade }}
         </td>

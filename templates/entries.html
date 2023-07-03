@@ -42,9 +42,13 @@
             {% for entry in entries %}
             <tr class="lang-row">
                 <td class="lang-cell" style="border-left-color: #{{ entry.language.color }};">
-                    <p>{{ entry.language.name }}</p>
+                    {% if entry.language.dialect == "" %}
+                    <p>{{ entry.language.language }}</span></p>
+                    {% else %}
+                    <p>{{ entry.language.language }}: <span class="font-thin">{{ entry.language.dialect }}</span></p>
+                    {% endif %}
                     <div class="clades-inline">
-                        {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if entry.clades %}{% if clade in entry.clades %}style="background-color: #{{ colors[clade] }};"{% endif %}{% endif %}></div>{% endfor %}
+                        {% for clade in order %}<div class="clade-block" title="{{ clade }}"{% if entry.clades %}{% set clades = entry.clades.split(',') %}{% if clade in clades %}style="background-color: #{{ colors[clade] }};"{% endif %}{% endif %}></div>{% endfor %}
                     </div>
                 </td>
                 <td><a href="/entries/{{ entry.id }}">{{ entry.word }} <span class="font-thin">[{{ entry.id }}]</span></a></td>

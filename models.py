@@ -10,6 +10,8 @@ class Language(Base):
 
     id = Column(String, primary_key=True)
     name = Column(String)
+    language = Column(String)
+    dialect = Column(String)
     glottocode = Column(String)
     long = Column(Float)
     lat = Column(Float)

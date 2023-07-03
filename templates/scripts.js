@@ -1,11 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
+
     const classes = ['lang', 'origin-lang', 'entry-name', 'source', 'gloss', 'word', 'origin', 'clade', 'notes', 'reflexes'];
+    const special_chars = ['ṭ', 'ḍ', 'ṣ', 'ṛ', 'r̩', 'ṁ', 'ʰ'];
+    var pal = document.createElement("div");
+    pal.classList.add("palette");
+    pal.classList.add("hidden");
+    special_chars.forEach(char => {
+        var span = document.createElement("span");
+        span.textContent = char;
+        pal.appendChild(span);
+    });
     var origUrl = `{{ request.url }}`
     var results = document.querySelector('.results');
+
     // create node
     var loader = document.createElement("tr");
     var temp = $('<div/>');
     loader.classList.add("loader-line");
+    loader.classList.add("hidden");
+    results.prepend(loader);
+
     const filterEntries = (obj) => {
         // add loading spinner to start of results
         results.prepend(loader);
@@ -16,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!('page' in obj)) {
             url.searchParams.delete('page');
         }
-        console.log(url)
         window.history.pushState({}, null, url);
 
         temp.load(url + ' .results, .showing, .page', function () {
@@ -35,28 +48,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     for (let i = 0; i < classes.length; i++) {
-        const classList = document.querySelectorAll(`.${classes[i]}-filter`);
+        const classList = document.querySelectorAll(`input.${classes[i]}-filter`);
         classList.forEach(filter => {
             let orig_value = filter.value;
-            filter.addEventListener('keydown', event => {
-                if (event.keyCode === 13) {
-                    className = classes[i].replace('-', '_');
+
+            // add palette
+            let palette = pal.cloneNode(true);
+            let className = classes[i].replace('-', '_');
+            palette.style.left = filter.offsetLeft + 'px';
+            palette.style.top = filter.offsetTop + filter.offsetHeight + 'px';
+            palette.addEventListener('click', event => {
+                if (event.target.tagName === 'SPAN') {
+                    filter.value += event.target.textContent;
+                    filter.focus();
                     obj = {};
-                    obj[`${className}`] = event.target.value;
+                    obj[`${className}`] = filter.value;
                     filterEntries(obj);
                 }
+            });
+            filter.parentNode.appendChild(palette);
+
+            filter.addEventListener('keyup', event => {
+                loader.classList.remove('hidden');
+                let new_value = event.target.value;
+                setTimeout(function() {
+                    if (filter.value === new_value) {
+                        obj = {};
+                        obj[`${className}`] = filter.value;
+                        filterEntries(obj);
+                    }
+                }, 300);
             });
             filter.addEventListener('focus', event => {
-                orig_value = event.target.value;
+                palette.classList.remove('hidden');
             });
             filter.addEventListener('blur', event => {
-                if (event.target.value !== orig_value) {
-                    className = classes[i].replace('-', '_');
-                    obj = {};
-                    obj[`${className}`] = event.target.value;
-                    filterEntries(obj);
-                }
-                orig_value = event.target.value;
+                setTimeout(function() {
+                    if (document.activeElement !== filter) {palette.classList.add('hidden');}
+                }, 300);
             });
         });
 

@@ -13,31 +13,31 @@ from collections import defaultdict
 colors = {
     "OIA": "E2DFD2",
     "MIA": "FFDEAD",
+    "Migratory": "63666A",
+    "Nuristani": "9132a8",
     "Pashai": "FFD6F6",
     "Chitrali": "FFACEF",
     "Shinaic": "FF81E6",
     "Kohistani": "FF25D5",
     "Kunar": "ff68e0",
     "Kashmiric": "FF00CD",
+    "Sindhic": "0066FF",
+    "Lahndic": "a4d6f5",
+    "Punjabic": "7164FF",
     "W. Pahari": "B94E16",
     "C. Pahari": "9E521B",
     "E. Pahari": "79421B",
-    "Lahndic": "a4d6f5",
-    "Punjabic": "7164FF",
-    "Sindhic": "0066FF",
-    "Gujaratic": "00CF4A",
-    "Rajasthanic": "6BCD00",
-    "Bhil": "09AD02",
-    "Khandeshi": "2FFF2F",
-    "Marathi-Konkani": "D50000",
-    "Halbic": "AB8900",
-    "Insular": "AC0000",
     "Eastern": "FFDE54",
     "Bihari": "FFCD00",
     "E. Hindi": "FF9A54",
     "W. Hindi": "FF6600",
-    "Migratory": "63666A",
-    "Nuristani": "9132a8",
+    "Rajasthanic": "6BCD00",
+    "Gujaratic": "00CF4A",
+    "Marathi-Konkani": "D50000",
+    "Bhil": "09AD02",
+    "Khandeshi": "2FFF2F",
+    "Halbic": "AB8900",
+    "Insular": "AC0000",
     "Old Dravidian": "679267",
     "S. Dravidian I": "74C365",
     "S. Dravidian II": "98FB98",
@@ -129,6 +129,7 @@ def main():
         lines = f.readlines()
         reader = csv.DictReader(lines)
         for row in tqdm(reader, total=len(lines)):
+            language, dialect = row["Name"].split(": ") if ": " in row["Name"] else (row["Name"], "")
             marker = ""
             if row["Clade"] in ["MIA", "OIA"] or "Old" in row["Name"] or "Proto" in row["Name"]:
                 marker = f"""<svg viewBox="0 0 30 30" xmlns="http://www.w3.org/2000/svg"><polygon points="0,15 15,0 30,15 15,30" fill="#{colors[row['Clade']]}" stroke="black" stroke-width="2"/></svg>"""
@@ -137,6 +138,8 @@ def main():
             language = Language(
                 id=row["ID"],
                 name=row["Name"],
+                language=language,
+                dialect=dialect,
                 glottocode=row["Glottocode"],
                 long=row["Longitude"],
                 lat=row["Latitude"],

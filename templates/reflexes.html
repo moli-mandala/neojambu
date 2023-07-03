@@ -92,7 +92,11 @@
         <tr class="lang-row">
             {% if not lang %}
             <td class="lang-cell" style="border-left-color: #{{ word.language.color }};">
-                <a href="/languages/{{word.language_id}}">{{ word.language.name }}</a>
+                {% if word.language.dialect == "" %}
+                <p><a href="/languages/{{ word.language_id }}">{{ word.language.language }}</span></a></p>
+                {% else %}
+                <p><a href="/languages/{{ word.language_id }}">{{ word.language.language }}: <span class="font-thin">{{ word.language.dialect }}</span></a></p>
+                {% endif %}
             </td>
             <td>
                 {% if word.origin_lemma %}

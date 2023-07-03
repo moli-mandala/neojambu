@@ -56,7 +56,7 @@ def filter_data(query, request, model):
                 query = query.order_by(sorts[col])
             elif order == "desc":
                 query = query.order_by(sorts[col].desc())
-    print(query)
+    
     return query, s is None or s == ""
 
 

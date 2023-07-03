@@ -338,20 +338,21 @@ table select {
     opacity: 0.5;
 }
 
-.arrow-right {
-    width: 0;
-    height: 0;
-    border-top: 60px solid transparent;
-    border-bottom: 60px solid transparent;
-
-    border-left: 60px solid green;
+.hidden {
+    display: none;
 }
 
-.arrow-left {
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid transparent;
+.palette {
+    position: absolute;
+    padding: 10px;
+    border: 2px solid #991B1B;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 1000;
+}
 
-    border-right: 10px solid blue;
+.palette span:not(:last-child) {
+    margin-right: 10px;
 }

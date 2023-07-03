@@ -73,7 +73,11 @@
     <tr class="lang-row">
         {% if loop.first %}
         <td class="lang-cell" style="border-left-color: #{{ lang.color }}" rowspan="{{ refs|length }}">
-            <p><a href="/languages/{{ lang.id }}">{{ reflex.language.name }}</a></p>
+            {% if reflex.language.dialect == "" %}
+            <p><a href="/languages/{{ lang.id }}">{{ reflex.language.language }}</span></a></p>
+            {% else %}
+            <p><a href="/languages/{{ lang.id }}">{{ reflex.language.language }}: <span class="font-thin">{{ reflex.language.dialect }}</span></a></p>
+            {% endif %}
         </td>
         {% else %}
         {% endif %}
