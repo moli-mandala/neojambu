@@ -8,8 +8,8 @@ import time
 from flask import Flask
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from app import app, get_session
-from models import Lemma, Language, Reference
+from src.neojambu.app import app, get_session
+from src.neojambu.models import Lemma, Language, Reference
 
 class TestDatabaseIndexes:
     """Test that database indexes are properly created and functioning."""

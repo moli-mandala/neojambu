@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Language, Lemma, Reference, Concept, Base
+from src.neojambu.models import Language, Lemma, Reference, Concept, Base
 from typing import List
 import pybtex.database
 import pybtex.bibtex

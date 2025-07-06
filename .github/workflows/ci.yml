@@ -68,11 +68,11 @@ jobs:
 
     - name: Run performance tests
       run: |
-        uv run python test_performance.py
+        uv run python tests/test_performance.py
 
     - name: Run webapp tests
       run: |
-        uv run pytest test_webapp.py -v --tb=short
+        uv run pytest tests/test_webapp.py -v --tb=short
 
     - name: Test Flask app startup
       run: |
@@ -88,7 +88,7 @@ jobs:
 
     - name: Run deployment verification
       run: |
-        uv run python verify_deployment.py
+        uv run python scripts/verify_deployment.py
 
     - name: Minimize uv cache
       run: uv cache prune

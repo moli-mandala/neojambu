@@ -153,8 +153,8 @@ jobs:
 
     - name: Run database tests
       run: |
-        uv run pytest test_webapp.py::TestDatabaseIndexes -v
-        uv run pytest test_webapp.py::TestSessionManagement -v
+        uv run pytest tests/test_webapp.py::TestDatabaseIndexes -v
+        uv run pytest tests/test_webapp.py::TestSessionManagement -v
 
   deployment-check:
     name: Deployment Validation

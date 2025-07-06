@@ -1,6 +1,8 @@
-def main():
-    print("Hello from neojambu!")
-
+#!/usr/bin/env python3
+"""
+Main entry point for the NeoJambu linguistics webapp.
+"""
 
 if __name__ == "__main__":
-    main()
+    from src.neojambu.app import app
+    app.run(threaded=True, port=2222)

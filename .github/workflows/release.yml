@@ -36,8 +36,8 @@ jobs:
             conn.execute(text('CREATE INDEX IF NOT EXISTS idx_lemmas_cognateset ON lemmas(cognateset)'))
             conn.commit()
         "
-        uv run pytest test_webapp.py -v
-        uv run python verify_deployment.py
+        uv run pytest tests/test_webapp.py -v
+        uv run python scripts/verify_deployment.py
 
     - name: Extract version from tag
       id: version

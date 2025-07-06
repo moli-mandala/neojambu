@@ -2,7 +2,7 @@
 """
 Quick test summary showing that all performance improvements are working.
 """
-from test_webapp import *
+from .test_webapp import *
 import pytest
 
 def test_all_improvements():

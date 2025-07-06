@@ -6,8 +6,8 @@ Ensures all components are working correctly in production.
 import os
 import sys
 import sqlite3
-from app import app, get_session
-from models import Lemma, Language
+from src.neojambu.app import app, get_session
+from src.neojambu.models import Lemma, Language
 
 def verify_database():
     """Verify database connectivity and data integrity."""

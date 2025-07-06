@@ -5,7 +5,7 @@ Author: Aryaman Arora (aryaman.arora2020@gmail.com)
 Date: 2023-05-19
 """
 
-from models import Language, Lemma, Concept, Reference
+from .models import Language, Lemma, Concept, Reference
 
 joins = {
     "source": lambda x: x.join(Lemma.references),

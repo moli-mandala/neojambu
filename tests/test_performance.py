@@ -5,7 +5,7 @@ Performance testing script for the neojambu webapp optimizations.
 import time
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-from models import Lemma, Language
+from src.neojambu.models import Lemma, Language
 
 def test_database_indexes():
     """Test database query performance with new indexes."""
