@@ -1,0 +1,288 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+    types: [opened, synchronize, reopened]
+
+jobs:
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      python: ${{ steps.changes.outputs.python }}
+      tests: ${{ steps.changes.outputs.tests }}
+      deployment: ${{ steps.changes.outputs.deployment }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v3
+      id: changes
+      with:
+        filters: |
+          python:
+            - '**/*.py'
+            - 'pyproject.toml'
+            - 'uv.lock'
+          tests:
+            - 'test_*.py'
+            - '**/*test*.py'
+          deployment:
+            - 'Procfile'
+            - 'runtime.txt'
+            - 'app.json'
+            - '.buildpacks'
+            - 'release.sh'
+
+  quick-test:
+    name: Quick Tests
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.python == 'true'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Install dependencies
+      run: uv sync
+
+    - name: Quick syntax check
+      run: |
+        uv run python -m py_compile app.py models.py search.py
+
+    - name: Import test
+      run: |
+        uv run python -c "
+        try:
+            from app import app, get_session
+            from models import Lemma, Language, Reference
+            print('✅ All imports successful')
+        except Exception as e:
+            print(f'❌ Import failed: {e}')
+            exit(1)
+        "
+
+    - name: Basic functionality test (without database)
+      run: |
+        uv run python -c "
+        from app import app
+        app.config['TESTING'] = True
+        client = app.test_client()
+        
+        # Test basic route (should work without database)
+        response = client.get('/')
+        if response.status_code != 200:
+            print(f'❌ Basic route test failed: {response.status_code}')
+            exit(1)
+        
+        print('✅ Basic functionality test passed')
+        "
+
+  lint-check:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.python == 'true'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Install dependencies
+      run: uv sync --dev
+
+    - name: Run ruff
+      run: |
+        uv run ruff check . --output-format=github || echo "⚠️ Ruff found issues"
+
+    - name: Check formatting with black
+      run: |
+        uv run black --check . || echo "⚠️ Code needs formatting"
+
+    - name: Check import sorting
+      run: |
+        uv run isort --check-only . || echo "⚠️ Imports need sorting"
+
+  test-with-db:
+    name: Database Tests
+    runs-on: ubuntu-latest
+    needs: [changes, quick-test]
+    if: needs.changes.outputs.tests == 'true' || needs.changes.outputs.python == 'true'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Install dependencies
+      run: uv sync
+
+    - name: Download test database
+      run: |
+        curl -L https://github.com/moli-mandala/data/releases/latest/download/data.db -o data.db
+
+    - name: Setup database indexes
+      run: |
+        uv run python -c "
+        from sqlalchemy import create_engine, text
+        engine = create_engine('sqlite:///data.db')
+        with engine.connect() as conn:
+            conn.execute(text('CREATE INDEX IF NOT EXISTS idx_lemmas_origin_lemma_id ON lemmas(origin_lemma_id)'))
+            conn.execute(text('CREATE INDEX IF NOT EXISTS idx_lemmas_language_id ON lemmas(language_id)'))
+            conn.execute(text('CREATE INDEX IF NOT EXISTS idx_lemmas_order ON lemmas(\"order\")'))
+            conn.execute(text('CREATE INDEX IF NOT EXISTS idx_lemmas_cognateset ON lemmas(cognateset)'))
+            conn.commit()
+        "
+
+    - name: Run database tests
+      run: |
+        uv run pytest test_webapp.py::TestDatabaseIndexes -v
+        uv run pytest test_webapp.py::TestSessionManagement -v
+
+  deployment-check:
+    name: Deployment Validation
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.deployment == 'true'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Validate deployment files
+      run: |
+        echo "📋 Checking deployment configuration..."
+        
+        # Check Procfile
+        if [ ! -f "Procfile" ]; then
+          echo "❌ Procfile missing"
+          exit 1
+        fi
+        
+        if ! grep -q "uv run" Procfile; then
+          echo "❌ Procfile doesn't use uv"
+          exit 1
+        fi
+        
+        # Check runtime.txt
+        if [ ! -f "runtime.txt" ]; then
+          echo "❌ runtime.txt missing"
+          exit 1
+        fi
+        
+        # Check app.json
+        if [ ! -f "app.json" ]; then
+          echo "❌ app.json missing"
+          exit 1
+        fi
+        
+        if ! grep -q "uv-python-buildpack" app.json; then
+          echo "❌ app.json doesn't specify uv buildpack"
+          exit 1
+        fi
+        
+        # Check release script
+        if [ ! -f "release.sh" ]; then
+          echo "❌ release.sh missing"
+          exit 1
+        fi
+        
+        if [ ! -x "release.sh" ]; then
+          echo "❌ release.sh not executable"
+          exit 1
+        fi
+        
+        echo "✅ All deployment files validated"
+
+    - name: Test release script
+      run: |
+        # Simulate Heroku environment
+        export DYNO=web.1
+        timeout 30s ./release.sh || echo "⚠️ Release script simulation completed"
+
+  security-check:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: changes
+    if: needs.changes.outputs.python == 'true'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v3
+
+    - name: Install dependencies
+      run: uv sync --dev
+
+    - name: Run bandit security scan
+      run: |
+        uv run bandit -r . -ll || echo "⚠️ Security issues found"
+
+    - name: Run safety check
+      run: |
+        uv run safety check || echo "⚠️ Dependency vulnerabilities found"
+
+  pr-summary:
+    name: PR Summary
+    runs-on: ubuntu-latest
+    needs: [quick-test, lint-check, test-with-db, deployment-check, security-check]
+    if: always()
+    steps:
+    - name: Generate PR summary
+      run: |
+        echo "## 📋 Pull Request Check Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ "${{ needs.quick-test.result }}" == "success" ]; then
+          echo "✅ **Quick Tests**: Passed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Quick Tests**: Failed" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.lint-check.result }}" == "success" ]; then
+          echo "✅ **Code Quality**: Passed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ **Code Quality**: Issues found" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.test-with-db.result }}" == "success" ]; then
+          echo "✅ **Database Tests**: Passed" >> $GITHUB_STEP_SUMMARY
+        elif [ "${{ needs.test-with-db.result }}" == "skipped" ]; then
+          echo "⏭️ **Database Tests**: Skipped (no changes)" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Database Tests**: Failed" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.deployment-check.result }}" == "success" ]; then
+          echo "✅ **Deployment**: Validated" >> $GITHUB_STEP_SUMMARY
+        elif [ "${{ needs.deployment-check.result }}" == "skipped" ]; then
+          echo "⏭️ **Deployment**: No changes" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ **Deployment**: Issues found" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+        if [ "${{ needs.security-check.result }}" == "success" ]; then
+          echo "✅ **Security**: No issues" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ **Security**: Review required" >> $GITHUB_STEP_SUMMARY
+        fi

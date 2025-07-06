@@ -1,1 +1,2 @@
-web: sh -c 'curl -L https://github.com/moli-mandala/data/releases/latest/download/data.db -o data.db && gunicorn app:app'
+release: ./release.sh
+web: uv run gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120

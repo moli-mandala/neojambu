@@ -61,5 +61,5 @@ def filter_data(query, request, model):
 
 
 def filter_page(query, request):
-    page = int(request.args.get("page"))
+    page = int(request.args.get("page", 1))
     return query.limit(50).offset(int(page) * 50 - 50).all()

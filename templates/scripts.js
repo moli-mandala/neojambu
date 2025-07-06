@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     const classes = ['lang', 'origin-lang', 'entry-name', 'source', 'gloss', 'word', 'origin', 'clade', 'notes', 'reflexes'];
-    const special_chars = ['ṭ', 'ḍ', 'ṣ', 'ṛ', 'r̩', 'r̆', 'ṁ', 'ʰ'];
+    const special_chars = ['ŋ', 'ṭ', 'ḍ', 'ṇ', 'ṣ', 'ṛ', 'r̩', 'r̆', 'ṁ', 'ʰ'];
     var pal = document.createElement("div");
     pal.classList.add("palette");
     pal.classList.add("hidden");

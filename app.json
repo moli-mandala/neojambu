@@ -1,0 +1,23 @@
+{
+  "name": "NeoJambu Linguistics Webapp",
+  "description": "A linguistics webapp for exploring etymological data with 313k lemmas across 615 languages",
+  "repository": "https://github.com/your-repo/neojambu",
+  "keywords": ["linguistics", "etymology", "flask", "sqlalchemy"],
+  "buildpacks": [
+    {
+      "url": "https://github.com/astral-sh/uv-python-buildpack"
+    }
+  ],
+  "env": {
+    "PYTHONPATH": {
+      "description": "Python path for module resolution",
+      "value": "."
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  }
+}
