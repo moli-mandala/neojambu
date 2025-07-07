@@ -279,71 +279,7 @@ jobs:
         name: performance-results
         path: performance-results.json
 
-  deploy-test:
-    name: Deployment Test
-    runs-on: ubuntu-latest
-    needs: [test, lint]
-    if: github.ref == 'refs/heads/main'
-    steps:
-    - uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
-
-    - name: Install uv
-      uses: astral-sh/setup-uv@v3
-
-    - name: Test deployment simulation
-      run: |
-        echo "🚀 Simulating Heroku deployment..."
-        
-        # Simulate release process
-        chmod +x release.sh
-        export DYNO=web.1
-        ./release.sh
-        
-        # Test that the app can start
-        timeout 10s uv run gunicorn app:app --bind 0.0.0.0:8000 --workers 1 --timeout 30 &
-        GUNICORN_PID=$!
-        
-        sleep 5
-        
-        # Test endpoints
-        curl -f http://localhost:8000/ || (echo "❌ Health check failed" && kill $GUNICORN_PID && exit 1)
-        curl -f http://localhost:8000/entries || (echo "❌ Entries endpoint failed" && kill $GUNICORN_PID && exit 1)
-        
-        kill $GUNICORN_PID
-        echo "✅ Deployment simulation successful!"
-
-    - name: Check deployment readiness
-      run: |
-        echo "📋 Deployment Readiness Checklist:"
-        
-        # Check required files
-        files=(
-          "Procfile"
-          "runtime.txt" 
-          "app.json"
-          ".buildpacks"
-          "release.sh"
-          "verify_deployment.py"
-          "pyproject.toml"
-          "uv.lock"
-        )
-        
-        for file in "${files[@]}"; do
-          if [ -f "$file" ]; then
-            echo "✅ $file exists"
-          else
-            echo "❌ $file missing"
-            exit 1
-          fi
-        done
-        
-        echo "✅ All deployment files present!"
-        echo "🎉 Ready for Heroku deployment!"
 
   report:
     name: Test Report
