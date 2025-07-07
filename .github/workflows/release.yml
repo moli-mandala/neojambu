@@ -29,12 +29,11 @@ jobs:
         uv run python -c "
         from sqlalchemy import create_engine, text
         engine = create_engine('sqlite:///data.db')
-        with engine.connect() as conn:
+        with engine.begin() as conn:
             conn.execute(text('CREATE INDEX IF NOT EXISTS idx_lemmas_origin_lemma_id ON lemmas(origin_lemma_id)'))
             conn.execute(text('CREATE INDEX IF NOT EXISTS idx_lemmas_language_id ON lemmas(language_id)'))
             conn.execute(text('CREATE INDEX IF NOT EXISTS idx_lemmas_order ON lemmas(\"order\")'))
             conn.execute(text('CREATE INDEX IF NOT EXISTS idx_lemmas_cognateset ON lemmas(cognateset)'))
-            conn.commit()
         "
         uv run pytest tests/test_webapp.py -v
         uv run python scripts/verify_deployment.py
